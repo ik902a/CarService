@@ -11,19 +11,32 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import by.epam.learn.entity.User;
+import by.epam.learn.entity.UserRole;
+import by.epam.learn.entity.UserStatus;
 import by.epam.learn.exception.DaoException;
-import by.epam.learn.model.dao.ColumnName;
+
 import by.epam.learn.model.dao.UserDao;
 import by.epam.learn.model.pool.ConnectionPool;
 import by.epam.learn.util.PasswordEncryptor;
+
+import static by.epam.learn.model.dao.ColumnName.*;
 
 
 public class UserDaoImpl implements UserDao {
 	public static Logger log = LogManager.getLogger();
 	private static final UserDao instance = new UserDaoImpl();
 	private static final String SQL_CONTAINS_LOGIN = "SELECT 1 FROM users WHERE login=?";
-	private static final String SQL_ADD_USER = "INSERT INTO users(login, name, email, password, role, status) VALUES (?, ?, ?, ?, ?, ?)";
-	private static final String SQL_FIND_USER = "SELECT iduser, login, name, email, password, phone, role, status FROM users WHERE login=?";
+	private static final String SQL_ADD_USER = "INSERT INTO users(login, name, email, password,"
+			+ "role, status) VALUES (?, ?, ?, ?, ?, ?)";
+	private static final String SQL_ACTIVATE_CLIENT = "UPDATE users SET status=? WHERE login=?";
+	
+	private static final String SQL_FIND_USER = "SELECT iduser, login, name, email, password, phone,"
+			+ "role, status FROM users WHERE login=?";
+	private static final String SQL_UPDATE_CLIENT = "UPDATE users SET login=?, name=?, email=?,"
+			+ "phone=? WHERE iduser=?";
+	
+	private static final String SQL_FIND_MECHANIC = "SELECT iduser, login, name, email, password, phone,"
+			+ "role, status FROM users WHERE role=mechanic";
 	
 	
 //	private static final String SQL_SELECT_ALL_USERS = "SELECT id, login, name FROM users";
@@ -42,8 +55,10 @@ public class UserDaoImpl implements UserDao {
 		boolean isContains = false;
 		try (Connection connection = ConnectionPool.getInstance().getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_CONTAINS_LOGIN)) {
+			log.debug("Dao - constaintlogin=" + login);
 			statement.setString(1, login);
 			ResultSet resultSet = statement.executeQuery();
+			log.debug("Dao - resultset=" + resultSet.toString());
 			if (resultSet.next()) {
 				isContains = true;
 			}
@@ -59,18 +74,18 @@ public class UserDaoImpl implements UserDao {
 		try (Connection connection = ConnectionPool.getInstance().getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_ADD_USER)) {
 			String login = user.getLogin();
+			log.debug("Dao - login=" + login);
 			String name = user.getName();
 			String email = user.getEmail();
-			String role = user.getRole();
-			String status = user.getStatus();
+			UserRole role = user.getRole();
+			UserStatus status = user.getStatus();
 			statement.setString(1, login);
 			statement.setString(2, name);
 			statement.setString(3, email);
 			statement.setString(4, hashedPassword);
-			statement.setString(5, role);
-			statement.setString(6, status);
+			statement.setString(5, role.toString());
+			statement.setString(6, status.toString());
 			int rowCount = statement.executeUpdate();
-			System.out.println("dao=" + rowCount);//TODO
 			if (rowCount != 0) {
 				isAdded = true;
 				log.info("User added successfully");
@@ -84,28 +99,45 @@ public class UserDaoImpl implements UserDao {
 		}
 		return isAdded;
 	}
+	
+	@Override
+	public boolean activate(String login) throws DaoException {
+		boolean isActivated;
+		try (Connection connection = ConnectionPool.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_ACTIVATE_CLIENT)) {
+			UserStatus status = UserStatus.ACTIVE;
+			
+			statement.setString(1, status.toString());
+			statement.setString(2, login);
+
+			int rowCount = statement.executeUpdate();
+
+			if (rowCount != 0) {
+				isActivated = true;
+				log.info("User activated successfully");
+			} else {
+				log.error("User {} wasn't activated", login);
+				isActivated = false;
+			}
+		} catch (SQLException e) {
+			log.error("Exception while adding new user", e);
+			throw new DaoException("Exception while adding new user", e);
+		}
+		return isActivated;
+	}
 
 	@Override
 	public Optional<User> findUser(String login, String password) throws DaoException {
-		   Optional<User> optionalUser = Optional.empty();;
+		   Optional<User> optionalUser = Optional.empty();
 	        try (Connection connection = ConnectionPool.getInstance().getConnection();
 	             PreparedStatement statement = connection.prepareStatement(SQL_FIND_USER)) {
 	            statement.setString(1, login);
-	            ResultSet userData = statement.executeQuery();
-	            if (userData.next()) {
-	                String hashedPassword = userData.getNString(ColumnName.USERS_PASSWORD);
+	            ResultSet resultSet = statement.executeQuery();
+	            if (resultSet.next()) {
+	                String hashedPassword = resultSet.getNString(USERS_PASSWORD);
 
 	                if (PasswordEncryptor.checkPassword(password, hashedPassword)) {
-	                	
-	                	//user.setUserId(resultSet.getInt(ColumnName.USERS_ID));
-	                	long userId = userData.getLong(ColumnName.USERS_IDUSER);
-	                    String name = userData.getNString(ColumnName.USERS_NAME);
-	                	String email = userData.getNString(ColumnName.USERS_EMAIL);
-	                    int phone = userData.getInt(ColumnName.USERS_PHONE);
-	                    String role = userData.getNString(ColumnName.USERS_ROLE);
-	                    String status = userData.getNString(ColumnName.USERS_STATUS);
-	                    
-	                    User user = new User(userId, login, name, email, phone, role, status);
+	                    User user = DaoEntityBuilder.buildUser(resultSet);
 	                    optionalUser = Optional.of(user);
 	                } else {
 	                    log.error("Incorrect password inputted for login {}", login);
@@ -120,6 +152,56 @@ public class UserDaoImpl implements UserDao {
 	        return optionalUser;
 	}
 	
+	@Override
+	public boolean updateClient(User user) throws DaoException {
+		boolean isUpdate;
+		try (Connection connection = ConnectionPool.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_CLIENT)) {
+			long userId = user.getUserId();
+			String login = user.getLogin();
+			log.debug("Dao - login=" + login);
+			String name = user.getName();
+			String email = user.getEmail();
+			String phone = user.getPhone();
+			
+			statement.setString(1, login);
+			statement.setString(2, name);
+			statement.setString(3, email);
+			statement.setString(4, phone);
+			statement.setLong(5, userId);
+
+			int rowCount = statement.executeUpdate();
+
+			if (rowCount != 0) {
+				isUpdate = true;
+				log.info("User added successfully");
+			} else {
+				log.error("User {} wasn't added", user);
+				isUpdate = false;
+			}
+		} catch (SQLException e) {
+			log.error("Exception while adding new user", e);
+			throw new DaoException("Exception while adding new user", e);
+		}
+		return isUpdate;
+	}
+	
+	@Override
+	public Optional<User> findMechanic() throws DaoException {
+		   Optional<User> mechanics = Optional.empty();
+	        try (Connection connection = ConnectionPool.getInstance().getConnection();
+	             PreparedStatement statement = connection.prepareStatement(SQL_FIND_MECHANIC)) {
+	            ResultSet resultSet = statement.executeQuery();
+	            
+				while (resultSet.next()) {
+					User mechanic = DaoEntityBuilder.buildUser(resultSet);
+					mechanics = Optional.of(mechanic);
+				}
+	        } catch (SQLException e) {
+	            throw new DaoException(e);
+	        }
+	        return mechanics;
+	}
 	
 
 	
@@ -156,9 +238,9 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public User update(User t) throws DaoException {
+	public boolean update(User t) throws DaoException {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 
 

@@ -7,14 +7,18 @@
 
 <html>
 <head>
-<title><fmt:message key="main.title" /></title>
+<title><fmt:message key="title.main" /></title>
 </head>
 <body>
-	<%@ include file="fragments/header.jsp"%>
 <c:set var="current_page" value="${pageContext.request.requestURI}" scope="session" />
-
-	<h1>виды работ</h1>
-
-	<%@ include file="fragments/footer.jsp"%>
+	<div id="header">
+		<c:import url="fragments/header.jsp" />
+	</div>
+	<div id="main">
+		<h1>Виды работ</h1>
+	</div>
+	<div id="footer">
+		<c:import url="fragments/footer.jsp" />
+	</div>
 </body>
 </html>

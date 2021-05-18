@@ -16,6 +16,7 @@ public class CommandProvider {
         if (commandName != null) {
             try {
                 CommandType commandType = CommandType.valueOf(commandName.toUpperCase());
+        		log.debug("Command provider=" + commandType);
                 currentCommand = commandType.getCommand();
             } catch (IllegalArgumentException e) {
                 log.error("No such command found {}", commandName, e);

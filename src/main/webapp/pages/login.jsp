@@ -7,30 +7,33 @@
 
 <html>
 <head>
-<title><fmt:message key="logIn.title" /></title>
+<title><fmt:message key="title.log_in" /></title>
 </head>
 <body>
-<%@ include file="fragments/header.jsp"%>
-
 <c:set var="current_page" value="${pageContext.request.requestURI}" scope="session" />
+	<div id="header">
+		<c:import url="fragments/header.jsp" />
+	</div>
+	
+<div class="form">
 	<form name="loginForm" method="POST" action="controller">
 		<input type="hidden" name="command" value="login" />
+		<div class="form-title"><fmt:message key="title.log_in" /></div>
 		
-		<fmt:message key="logIn.login" />
-		<br />
+		<div class="infofield"><fmt:message key="field.login" /></div>
 		<input type="text" name="login" value="" /> 
-		<br />
-
-		<fmt:message key="logIn.password" />
-		<br />
+		
+		<div class="infofield"><fmt:message key="field.password" /></div>
 		<input type="password" name="password" value="" /> 
 
-		<br />
-		<input type="submit" value=<fmt:message key="logIn.log_in"/> />
-		<br />
-		${errorUserMessage}
+		<input type="submit" value=<fmt:message key="button.log_in"/>/>
+		
+		<div class="error-message"><fmt:message key='<c:out value="${ error_message }"/>'/></div>
 	</form>
-
-<%@ include file="fragments/footer.jsp"%>
+</div>
+	
+	<div id="footer">
+		<c:import url="fragments/footer.jsp" />
+	</div>
 </body>
 </html>

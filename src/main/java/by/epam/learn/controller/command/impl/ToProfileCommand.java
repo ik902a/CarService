@@ -1,42 +1,151 @@
 package by.epam.learn.controller.command.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import by.epam.learn.controller.command.Command;
+import by.epam.learn.controller.command.MessageKey;
 import by.epam.learn.controller.command.PagePath;
+import by.epam.learn.controller.command.Router;
+import by.epam.learn.controller.command.Router.RouteType;
 import by.epam.learn.controller.command.SessionAttribute;
-
+import by.epam.learn.entity.Order;
+import by.epam.learn.entity.User;
 import by.epam.learn.entity.UserRole;
+import by.epam.learn.exception.ServiceException;
+import by.epam.learn.model.service.impl.CarServiceImpl;
+import by.epam.learn.model.service.impl.OrderServiceImpl;
+import by.epam.learn.model.service.impl.UserServiceImpl;
+import by.epam.learn.model.service.impl.WorkTypeServiceImpl;
+
+import static by.epam.learn.controller.command.RequestParameter.*;
 
 public class ToProfileCommand implements Command {
 	public static Logger log = LogManager.getLogger();
 
+    private final CarServiceImpl carService;
+    private final WorkTypeServiceImpl workTypeService;
+    private final OrderServiceImpl orderService;
+    private final UserServiceImpl userService;
+    
+    public ToProfileCommand(CarServiceImpl carService, WorkTypeServiceImpl workTypeService,
+    		OrderServiceImpl orderService, UserServiceImpl userService) {
+        this.carService = carService;
+        this.workTypeService = workTypeService;
+        this.orderService = orderService;
+        this.userService = userService;
+    }
+
 	@Override
-	public String execute(HttpServletRequest request) {
-		String page;
-		String currentRole = (String) request.getSession().getAttribute(SessionAttribute.ROLE);
-		UserRole typeRole = UserRole.valueOf(currentRole.toUpperCase());
-		switch (typeRole) {
+	public Router execute(HttpServletRequest request) {
+		Router router;
+		UserRole currentRole = (UserRole) request.getSession().getAttribute(ROLE);
+		switch (currentRole) {
 		case ADMIN:
-			page = PagePath.ADMIN_PROFILE;
+			router = new Router(PagePath.ADMIN_PROFILE, RouteType.FORWARD);
 			break;
 		case MANAGER:
-			page = PagePath.MANAGER_PROFILE;
+			//User manager = (User) request.getSession().getAttribute(SessionAttribute.USER);//TODO не нужно
+			//log.debug("in Command {}", manager.toString());
+			
+			List<Order> managerOrders = new ArrayList<>();
+			try {
+				managerOrders = orderService.findAllOrder();
+			}catch (ServiceException e) {
+				log.error("Exception while adding", e);
+				router = new Router(PagePath.ERROR, RouteType.REDIRECT);
+			}
+			if (!managerOrders.isEmpty()) {
+
+				request.setAttribute(ORDER_LIST, managerOrders);
+			} else {
+				log.error("Type of work is not read");
+			}
+			
+			List<User> mechanics = new ArrayList<>();
+			try {
+				mechanics = userService.findMechanic();
+			}catch (ServiceException e) {
+				log.error("Exception while adding", e);
+				router = new Router(PagePath.ERROR, RouteType.REDIRECT);
+			}
+			if (!mechanics.isEmpty()) {
+				request.setAttribute(MECHANIC_LIST, mechanics);
+			} else {
+				log.error("Type of work is not read");
+			}
+		
+			router = new Router(PagePath.MANAGER_PROFILE, RouteType.FORWARD);
 			break;
+			
+			
+			
 		case MECHANIC:
-			page = PagePath.MECHANIC_PROFILE;
+			User mechanic = (User) request.getSession().getAttribute(SessionAttribute.USER);
+			log.debug("in Command {}", mechanic.toString());
+			
+			List<Order> mechanicOrders = new ArrayList<>();
+			try {
+				managerOrders = orderService.findOrder(mechanic);
+			}catch (ServiceException e) {
+				log.error("Exception while adding", e);
+				router = new Router(PagePath.ERROR, RouteType.REDIRECT);
+			}
+			if (!mechanicOrders.isEmpty()) {
+
+				request.setAttribute(ORDER_LIST, mechanicOrders);
+			} else {
+				log.error("Type of work is not read");
+			}
+			
+			router = new Router(PagePath.MECHANIC_PROFILE, RouteType.FORWARD);
 			break;
+			
+			
 		case CLIENT:
-			page = PagePath.CLIENT_PROFILE;
+			User client = (User) request.getSession().getAttribute(SessionAttribute.USER);
+			log.debug("in Command {}", client.toString());
+			
+			Map<Long, String> cars = new HashMap<>();
+			try {
+				cars = carService.findCar(client);
+			} catch (ServiceException e) {
+				log.error("Exception while adding", e);
+				router = new Router(PagePath.ERROR, RouteType.REDIRECT);
+			}
+			if (!cars.isEmpty()) {
+			request.setAttribute(CAR_LIST, cars);
+			} else {
+				request.setAttribute(INFO_MESSAGE, MessageKey.ADD_CAR_MESSAGE);
+			}
+			
+			Map<Long, String> works = new HashMap<>();
+			try {
+				works = workTypeService.findAllWorkType();
+			} catch (ServiceException e) {
+				log.error("Exception while adding", e);
+				router = new Router(PagePath.ERROR, RouteType.REDIRECT);
+			}					
+			if (!works.isEmpty()) {
+				request.setAttribute(WORK_LIST, works);
+			} else {
+				log.error("Type of work is not read");
+			}
+			router = new Router(PagePath.CLIENT_PROFILE, RouteType.FORWARD);
 			break;
+			
 		default:
 			log.error("incorrect role type");
-			page = PagePath.HOME;
+			router = new Router(PagePath.HOME, RouteType.REDIRECT);
 			break;
 		}
-		return page;
+		return router;
 	}
 }

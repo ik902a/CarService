@@ -1,4 +1,4 @@
-  package by.epam.learn.controller;
+package by.epam.learn.controller;
 
 import java.io.IOException;
 
@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import by.epam.learn.controller.command.Command;
 import by.epam.learn.controller.command.CommandProvider;
 import by.epam.learn.controller.command.PagePath;
+import by.epam.learn.controller.command.Router;
 import by.epam.learn.exception.ConnectionPoolException;
 import by.epam.learn.model.pool.ConnectionPool;
 
@@ -32,19 +33,27 @@ public class Controller extends HttpServlet {
 		processRequest(request, response);
 	}
 	
-	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String commandName = request.getParameter(COMMAND);
-		log.debug("controller=" + commandName);
-		String page;
-		if (commandName != null) {
-			Command command = CommandProvider.defineCommand(commandName);
-			page = command.execute(request);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(page);
+		log.debug("Controller command=" + commandName);
+		Command command = CommandProvider.defineCommand(commandName);
+		Router router = command.execute(request);
+		switch (router.getRouteType()) {
+		case REDIRECT:
+			log.debug("Controller redirect " + router.getPagePath());
+			response.sendRedirect(router.getPagePath());
+			break;
+		case FORWARD:
+			log.debug("Controller forward " + router.getPagePath());
+			RequestDispatcher dispatcher = request.getRequestDispatcher(router.getPagePath());
 			dispatcher.forward(request, response);
-		} else {
-            page = PagePath.HOME;
-            response.sendRedirect(request.getContextPath() + page);
-        }
+			break;
+		default:
+			log.error("incorrect route type");//TODO exception
+			response.sendRedirect(PagePath.ERROR);
+			break;
+		}
 	}
 	
     @Override

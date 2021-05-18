@@ -1,24 +1,35 @@
 package by.epam.learn.controller.command;
 
-import by.epam.learn.controller.command.impl.SignUpCommand;
-import by.epam.learn.controller.command.impl.ToPageCommand;
-import by.epam.learn.controller.command.impl.LogInCommand;
-import by.epam.learn.controller.command.impl.LogOutCommand;
-import by.epam.learn.controller.command.impl.ToProfileCommand;
-import by.epam.learn.controller.command.impl.AddCarCommand;
-import by.epam.learn.controller.command.impl.ChangeLocaleCommand;
-
+import by.epam.learn.controller.command.impl.*;
+import by.epam.learn.model.service.impl.CarServiceImpl;
+import by.epam.learn.model.service.impl.WorkTypeServiceImpl;
 import by.epam.learn.model.service.impl.UserServiceImpl;
+import by.epam.learn.model.service.impl.OrderServiceImpl;
 
 public enum CommandType {
-	SIGNUP(new SignUpCommand(new UserServiceImpl())),
+	TO_HOME(new ToPageCommand(PagePath.HOME)),
 	TO_MAIN(new ToPageCommand(PagePath.MAIN)),
 	TO_SIGNUP(new ToPageCommand(PagePath.SIGNUP)),
-    LOGIN(new LogInCommand(new UserServiceImpl())),
+	SIGNUP(new SignUpCommand(new UserServiceImpl())),
 	TO_LOGIN(new ToPageCommand(PagePath.LOGIN)),
+    LOGIN(new LogInCommand(new UserServiceImpl())),
 	LOGOUT(new LogOutCommand()),
-	TO_PROFILE(new ToProfileCommand()),
+	
+	TO_PROFILE(new ToProfileCommand(new CarServiceImpl(), 
+			new WorkTypeServiceImpl(), 
+			new OrderServiceImpl(), 
+			new UserServiceImpl())),
+	
+	TO_ADD_CAR(new ToPageCommand(PagePath.ADD_CAR)),
 	ADD_CAR(new AddCarCommand(new CarServiceImpl())),
+	TO_EDIT_PROFILE(new ToEditProfileCommand()),
+	ADD_ORDER(new AddOrderCommand(new OrderServiceImpl())),
+	UPDATE_CLIENT(new UpdateClientCommand(new UserServiceImpl())),
+	
+	UPDATE_ACTIVE_ORDER_STATUS(new UpdateActiveOrderStatusCommand(new OrderServiceImpl())),
+	UPDATE_READY_ORDER_STATUS(new UpdateReadyOrderStatusCommand(new OrderServiceImpl())),
+	
+	ACTIVATION(new ActivationCommand(new UserServiceImpl())),
 	CHANGE_LOCALE(new ChangeLocaleCommand());
     
 //    SEARCH(new SearchCommand(new UserServiceImpl()));

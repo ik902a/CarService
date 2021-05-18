@@ -26,7 +26,7 @@ final class ConnectionFactory {
 		try {			
 			DriverManager.registerDriver(new Driver());
 		} catch (SQLException e) {
-			log.error("ERROR driver doesn't found", e);//TODO  + driver name
+			log.fatal("ERROR driver doesn't found", e);//TODO  + driver name
 			throw new RuntimeException("driver doesn't found", e);
 		}
 		DATABASE_URL = bundle.getString(DB_URL);

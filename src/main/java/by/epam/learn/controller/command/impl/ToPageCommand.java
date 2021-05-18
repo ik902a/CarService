@@ -6,6 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import by.epam.learn.controller.command.Command;
+import by.epam.learn.controller.command.Router;
+import by.epam.learn.controller.command.Router.RouteType;
 
 public class ToPageCommand implements Command {
 	public static Logger log = LogManager.getLogger();
@@ -17,8 +19,9 @@ public class ToPageCommand implements Command {
     }
 
 	@Override
-	public String execute(HttpServletRequest request) {
+	public Router execute(HttpServletRequest request) {
         log.debug("Forward to {}", page);
-        return page;
+        Router router = new Router(page, RouteType.FORWARD);
+        return router;
 	}
 }

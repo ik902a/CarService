@@ -12,5 +12,10 @@ public interface UserDao extends BaseDao<Integer, User> {
 	boolean addUser(User user, String hashedPassword) throws DaoException;
 	
 	Optional<User> findUser(String login, String password) throws DaoException;
+	
+	boolean updateClient(User user) throws DaoException;
 
+	Optional<User> findMechanic() throws DaoException;
+	
+	boolean activate(String login) throws DaoException;
 }
