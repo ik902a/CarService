@@ -1,5 +1,11 @@
 package by.epam.learn.entity;
 
+/**
+ * The {@code Price} class describes the entity price
+ * 
+ * @author Ihar Klepcha
+ * @see Entity
+ */
 public class Price extends Entity {
 	private static final long serialVersionUID = 1L;
 	private long priceId;
@@ -7,9 +13,20 @@ public class Price extends Entity {
 	private double price;
 	private WorkType workType;
 	
+	/**
+	 * Constructs a new price
+	 */
 	public Price() {
 	}
 	
+	/**
+	 * Constructs a new price with the specified
+	 * 
+	 * @param priceId {@link long} price id
+	 * @param operation {@link String} operation description
+	 * @param price {@link double} price
+	 * @param workType {@link WorkType} type of work
+	 */
 	public Price(long priceId, String operation, double price, WorkType workType) {
 		this.priceId = priceId;
 		this.operation = operation;
@@ -17,6 +34,13 @@ public class Price extends Entity {
 		this.workType = workType;
 	}
 	
+	/**
+	 * Constructs a new price with the specified
+	 * 
+	 * @param operation {@link String} operation description
+	 * @param price {@link double} price
+	 * @param workType {@link WorkType} type of work
+	 */
 	public Price(String operation, double price, WorkType workType) {
 		this.operation = operation;
 		this.price = price;

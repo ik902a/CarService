@@ -17,21 +17,21 @@ import by.epam.learn.controller.command.Router;
 import by.epam.learn.controller.command.Router.RouteType;
 import by.epam.learn.controller.command.AttributeParameter;
 import by.epam.learn.exception.ServiceException;
-import by.epam.learn.model.service.impl.OrderServiceImpl;
+import by.epam.learn.model.service.impl.PriceServiceImpl;
 
 import static by.epam.learn.controller.command.RequestParameter.*;
 import static by.epam.learn.controller.command.DataKeyword.*;
 
 /**
- * The {@code AddOrderCommand} class adds new order
+ * The {@code AddPriceCommand} class adds new price
  * 
  * @author Ihar Klepcha
  */
-public class AddOrderCommand implements Command {
+public class AddPriceCommand implements Command {
 	public static Logger log = LogManager.getLogger();
-    private final OrderServiceImpl service;
+    private final PriceServiceImpl service;
 
-    public AddOrderCommand(OrderServiceImpl service) {
+    public AddPriceCommand(PriceServiceImpl service) {
         this.service = service;
     }
 
@@ -39,36 +39,36 @@ public class AddOrderCommand implements Command {
 	public Router execute(HttpServletRequest request) {
 		List<String> errorMessageList = new ArrayList<>();
 		Router router;
-		String carIdValue = request.getParameter(CAR_ORDER);
-		String workIdValue = request.getParameter(WORK_ORDER);
-		String messageValue = request.getParameter(MESSAGE_ORDER);
-		Map<String, String> orderData = new HashMap<>();
-		orderData.put(CAR_ID_KEY, carIdValue);
-		orderData.put(WORK_ID_KEY, workIdValue);
-		orderData.put(MESSAGE_KEY, messageValue);
+		String operationValue = request.getParameter(OPERATION);
+		String priceValue = request.getParameter(PRICE);
+		String workTypeValue = request.getParameter(WORK_TYPE);
+		Map<String, String> priceData = new HashMap<>();
+		priceData.put(OPERATION_KEY, operationValue);
+		priceData.put(PRICE_KEY, priceValue);
+		priceData.put(WORK_TYPE_KEY, workTypeValue);
 		try {
-			boolean isAdded = service.addOrder(orderData);
+			boolean isAdded = service.addPrice(priceData);
 			if (isAdded) {
-				router = new Router(PagePath.PROFILE_REDIRECT, RouteType.REDIRECT);
+				router = new Router(PagePath.ADD_PRICE_REDIRECT, RouteType.REDIRECT);
 			} else {
-				carIdValue = orderData.get(CAR_ID_KEY);
-				workIdValue = orderData.get(WORK_ID_KEY);
-				messageValue = orderData.get(MESSAGE_KEY);
-				if (carIdValue.contains(INCORRECT_VALUE)) {
-					errorMessageList.add(MessageKey.SELECT_CAR_MESSAGE);
+				operationValue = priceData.get(OPERATION_KEY);
+				priceValue = priceData.get(PRICE_KEY);
+				workTypeValue = priceData.get(WORK_TYPE_KEY);
+				if (operationValue.contains(INCORRECT_VALUE)) {
+					errorMessageList.add(MessageKey.INCORRECT_OPERATION_MESSAGE);
 				}
-				if (workIdValue.contains(INCORRECT_VALUE)) {
+				if (priceValue.contains(INCORRECT_VALUE)) {
+					errorMessageList.add(MessageKey.INCORRECT_PRICE_MESSAGE);
+				}
+				if (workTypeValue.contains(INCORRECT_VALUE)) {
 					errorMessageList.add(MessageKey.SELECT_WORK_MESSAGE);
 				}
-				if (messageValue.contains(INCORRECT_VALUE)) {
-					errorMessageList.add(MessageKey.INCORRECT_SYMBOL_MESSAGE);
-				}
 				request.setAttribute(AttributeParameter.ERROR_MESSAGE_LIST, errorMessageList);
-				router = new Router(PagePath.PROFILE_REDIRECT, RouteType.FORWARD);
+				router = new Router(PagePath.ADD_PRICE_REDIRECT, RouteType.FORWARD);
 			}
 		} catch (ServiceException e) {
 			request.setAttribute(AttributeParameter.EXCEPTION, e);
-			log.error("exception while adding order", e);
+			log.error("exception while adding price", e);
 			router = new Router(PagePath.ERROR, RouteType.FORWARD);
 		}
 		return router;

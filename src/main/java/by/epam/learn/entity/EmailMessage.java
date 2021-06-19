@@ -1,13 +1,29 @@
 package by.epam.learn.entity;
 
+/**
+ * The {@code EmailMessage} class describes the email
+ * 
+ * @author Ihar Klepcha
+ * @see Entity
+ */
 public class EmailMessage {
 	private String recipient;
 	private String subject;
 	private String message;
 
+	/**
+	 * Constructs a new email message
+	 */
 	public EmailMessage() {
 	}
 	
+	/**
+	 * Constructs a new email message with the specified
+	 * 
+	 * @param recipient {@link String} recipient a message
+	 * @param subject {@link String} subject a message
+	 * @param message {@link String} text a message
+	 */
 	public EmailMessage(String recipient, String subject, String message) {
 		this.recipient = recipient;
 		this.subject = subject;

@@ -19,6 +19,12 @@ import by.epam.learn.controller.command.Router;
 import by.epam.learn.exception.ConnectionPoolException;
 import by.epam.learn.model.pool.ConnectionPool;
 
+/**
+ * The {@code Controller} class receives request from client (get or post)
+ * 
+ * @author Ihar Klepcha
+ * @see HttpServlet
+ */
 @WebServlet(name = "controller", urlPatterns = { "/controller" })
 public class Controller extends HttpServlet {
 	public static Logger log = LogManager.getLogger();
@@ -33,6 +39,14 @@ public class Controller extends HttpServlet {
 		processRequest(request, response);
 	}
 	
+	/**
+	 * Processes get and post requests
+	 * 
+	 * @param request  {@link HttpServletRequest}
+	 * @param response {@link HttpServletResponse}
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	private void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String commandName = request.getParameter(COMMAND);
@@ -50,12 +64,16 @@ public class Controller extends HttpServlet {
 			dispatcher.forward(request, response);
 			break;
 		default:
-			log.error("incorrect route type");//TODO exception
+			log.error("imposible route type");
 			response.sendRedirect(PagePath.ERROR);
-			break;
 		}
 	}
 	
+	/**
+	 * Destroys pool
+	 * 
+	 * @throws ConnectionPoolException
+	 */
     @Override
     public void destroy() {
         try {
@@ -63,6 +81,6 @@ public class Controller extends HttpServlet {
         } catch (ConnectionPoolException e) {
             log.error("Exception while destroying the connection pool", e);
         }
-        log.debug("Connection pool destroyed successfully");
+        log.info("Connection pool destroyed successfully");
     }
 }

@@ -23,15 +23,15 @@ import static by.epam.learn.controller.command.RequestParameter.*;
 import static by.epam.learn.controller.command.DataKeyword.*;
 
 /**
- * The {@code SignUpCommand} class represents sign up user
+ * The {@code AddUserCommand} class adds new user
  * 
  * @author Ihar Klepcha
  */
-public class SignUpCommand implements Command {
+public class AddUserCommand implements Command {
 	public static Logger log = LogManager.getLogger();
 	private final UserServiceImpl service;
 
-	public SignUpCommand(UserServiceImpl service) {
+	public AddUserCommand(UserServiceImpl service) {
 		this.service = service;
 	}
 
@@ -42,22 +42,28 @@ public class SignUpCommand implements Command {
 		String loginValue = request.getParameter(LOGIN);
 		String nameValue = request.getParameter(NAME);
 		String emailValue = request.getParameter(EMAIL);
+		String phoneValue = request.getParameter(PHONE);
+		String roleValue = request.getParameter(ROLE);
 		String passValue = request.getParameter(PASSWORD);
 		String passConfirmValue = request.getParameter(PASSWORD_CONFIRMING);
 		Map<String, String> userData = new HashMap<>();
 		userData.put(LOGIN_KEY, loginValue);
 		userData.put(NAME_KEY, nameValue);
 		userData.put(EMAIL_KEY, emailValue);
+		userData.put(PHONE_KEY, phoneValue);
+		userData.put(ROLE_KEY, roleValue);
 		userData.put(PASSWORD_KEY, passValue);
 		userData.put(CONFIRMING_PASSWORD_KEY, passConfirmValue);
 		try {
-			boolean isSignUp = service.signUp(userData);
-			if (isSignUp) {
-				router = new Router(PagePath.HOME, RouteType.REDIRECT);
+			boolean isAdded = service.addUser(userData);
+			if (isAdded) {
+				router = new Router(PagePath.PROFILE_REDIRECT, RouteType.REDIRECT);
 			} else {
 				loginValue = userData.get(LOGIN_KEY);
 				nameValue = userData.get(NAME_KEY);
 				emailValue = userData.get(EMAIL_KEY);
+				phoneValue = userData.get(PHONE_KEY);
+				roleValue = userData.get(ROLE_KEY);
 				passValue = userData.get(PASSWORD_KEY);
 				passConfirmValue = userData.get(CONFIRMING_PASSWORD_KEY);
 				if (loginValue.contains(INCORRECT_VALUE)) {
@@ -72,6 +78,12 @@ public class SignUpCommand implements Command {
 				if (emailValue.contains(INCORRECT_VALUE)) {
 					errorMessageList.add(MessageKey.INCORRECT_EMAIL_MESSAGE);
 				}
+				if (phoneValue.contains(INCORRECT_VALUE)) {
+					errorMessageList.add(MessageKey.INCORRECT_PHONE_MESSAGE);
+				}
+				if (roleValue.contains(INCORRECT_VALUE)) {
+					errorMessageList.add(MessageKey.INCORRECT_ROLE_MESSAGE);
+				}
 				if (passValue.contains(INCORRECT_VALUE)) {
 					errorMessageList.add(MessageKey.INCORRECT_PASSWORD_MESSAGE);
 				}
@@ -79,11 +91,11 @@ public class SignUpCommand implements Command {
 					errorMessageList.add(MessageKey.PASSWORD_DOESNT_MATH_MESSAGE);
 				}
 				request.setAttribute(AttributeParameter.ERROR_MESSAGE_LIST, errorMessageList);
-				router = new Router(PagePath.SIGNUP, RouteType.FORWARD);
+				router = new Router(PagePath.ADD_USER, RouteType.FORWARD);
 			}
 		} catch (ServiceException e) {
 			request.setAttribute(AttributeParameter.EXCEPTION, e);
-			log.error("exception while signing up", e);
+			log.error("exception while adding user", e);
 			router = new Router(PagePath.ERROR, RouteType.FORWARD);
 		}
 		return router;

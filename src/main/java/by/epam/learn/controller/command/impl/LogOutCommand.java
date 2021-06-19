@@ -11,17 +11,22 @@ import by.epam.learn.controller.command.PagePath;
 import by.epam.learn.controller.command.Router;
 import by.epam.learn.controller.command.Router.RouteType;
 
+/**
+ * The {@code LogOutCommand} class represents log out
+ * 
+ * @author Ihar Klepcha
+ */
 public class LogOutCommand implements Command {
 	public static Logger log = LogManager.getLogger();
 
 	@Override
 	public Router execute(HttpServletRequest request) {
-        log.debug("Logged out");
-        Router router = new Router(PagePath.HOME_REDIRECT, RouteType.REDIRECT);//TODO check
+        log.info("Logged out");
     	HttpSession session = request.getSession(false);
 		if (session != null) {
 			session.invalidate();
 		}
+        Router router = new Router(PagePath.HOME_REDIRECT, RouteType.REDIRECT);
         return router;
 	}
 }

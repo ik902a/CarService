@@ -1,5 +1,11 @@
 package by.epam.learn.entity;
 
+/**
+ * The {@code Car} class describes the entity car
+ * 
+ * @author Ihar Klepcha
+ * @see Entity
+ */
 public class Car extends Entity {
 	private static final long serialVersionUID = 1L;
 	private long carId;
@@ -12,9 +18,25 @@ public class Car extends Entity {
 	private String volumeEngine;
 	private String transmisionType;
 	
+	/**
+	 * Constructs a new car
+	 */
 	public Car() {
 	}
 
+	/**
+	 * Constructs a new car with the specified
+	 * 
+	 * @param carId {@link long} car id
+	 * @param user {@link User} user
+	 * @param vin {@link String} vin number
+	 * @param brand {@link String} brand a car
+	 * @param model {@link String} model a car
+	 * @param yearPriduction {@link String} year production a car
+	 * @param fuelType {@link String} type of fuel an engine
+	 * @param volumeEngine {@link String} volume engine
+	 * @param transmission type {@link String} type of transmission a car
+	 */
 	public Car(long carId, User user, String vin, String brand, String model, String yearProduction, String fuelType,
 			String volumeEngine, String transmisionType) {
 		this.carId = carId;
@@ -28,6 +50,18 @@ public class Car extends Entity {
 		this.transmisionType = transmisionType;
 	}
 
+	/**
+	 * Constructs a new car with the specified
+	 * 
+	 * @param user {@link User} user
+	 * @param vin {@link String} vin number
+	 * @param brand {@link String} brand a car
+	 * @param model {@link String} model a car
+	 * @param yearPriduction {@link String} year production a car
+	 * @param fuelType {@link String} type of fuel an engine
+	 * @param volumeEngine {@link String} volume engine
+	 * @param transmission type {@link String} type of transmission a car
+	 */
 	public Car(User user, String vin, String brand, String model, String yearProduction, String fuelType,
 			String volumeEngine, String transmisionType) {
 		this.user = user;

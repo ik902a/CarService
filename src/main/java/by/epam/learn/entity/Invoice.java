@@ -2,6 +2,12 @@ package by.epam.learn.entity;
 
 import java.time.LocalDate;
 
+/**
+ * The {@code Invoice} class describes the entity invoice
+ * 
+ * @author Ihar Klepcha
+ * @see Entity
+ */
 public class Invoice extends Entity {
 	private static final long serialVersionUID = 1L;
 	private long invoiceId;
@@ -9,9 +15,20 @@ public class Invoice extends Entity {
 	private Price price;
 	private LocalDate date;
 	
+	/**
+	 * Constructs a new invoice
+	 */
 	public Invoice() {
 	}
 
+	/**
+	 * Constructs a new invoice with the specified
+	 * 
+	 * @param invoiceId {@link long} invoice id
+	 * @param user {@link User} user
+	 * @param price {@link Price} price
+	 * @param date {@link LocalDate} date
+	 */
 	public Invoice(long invoiceId, User user, Price price, LocalDate date) {
 		this.invoiceId = invoiceId;
 		this.user = user;
@@ -19,6 +36,13 @@ public class Invoice extends Entity {
 		this.date = date;
 	}
 
+	/**
+	 * Constructs a new invoice with the specified
+	 * 
+	 * @param user {@link User} user
+	 * @param price {@link Price} price
+	 * @param date {@link LocalDate} date
+	 */
 	public Invoice(User user, Price price, LocalDate date) {
 		this.user = user;
 		this.price = price;

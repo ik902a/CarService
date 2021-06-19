@@ -1,13 +1,27 @@
 package by.epam.learn.entity;
 
+/**
+ * The {@code WorkType} class describes the entity type of work
+ * 
+ * @author Ihar Klepcha
+ */
 public class WorkType extends Entity {
 	private static final long serialVersionUID = 1L;
 	private long workTypeId;
 	private String workType;
 	
+	/**
+	 * Constructs a new type of work
+	 */
 	public WorkType() {
 	}
 
+	/**
+	 * Constructs a new type of work with the specified
+	 * 
+	 * @param workTypeId {@link long} type id of work
+	 * @param workType {@link String} type name of work
+	 */
 	public WorkType(long workTypeId, String workType) {
 		this.workTypeId = workTypeId;
 		this.workType = workType;

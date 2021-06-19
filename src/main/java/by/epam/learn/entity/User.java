@@ -1,5 +1,11 @@
 package by.epam.learn.entity;
 
+/**
+ * The {@code User} class describes the entity user
+ * 
+ * @author Ihar Klepcha
+ * @see Entity
+ */
 public class User extends Entity {
 	private static final long serialVersionUID = 1L;
 	private long userId;
@@ -10,10 +16,25 @@ public class User extends Entity {
 	private UserRole role;
 	private UserStatus status;
 	
+	/**
+	 * Constructs a new user
+	 */
 	public User() {
 	}
 
-	public User(long userId, String login, String name, String email, String phone, UserRole role, UserStatus status) {
+	/**
+	 * Constructs a new user with the specified
+	 * 
+	 * @param userId {@link long} user id
+	 * @param login {@link String} login
+	 * @param name {@link String} name
+	 * @param email {@link String} email address
+	 * @param phone {@link String} phone number
+	 * @param role {@link UserRole} role this user
+	 * @param status {@link UserStatus} status this user
+	 */
+	public User(long userId, String login, String name, String email, String phone, UserRole role, 
+			UserStatus status) {
 		this.userId = userId;
 		this.login = login;
 		this.name = name;
@@ -23,6 +44,15 @@ public class User extends Entity {
 		this.status = status;
 	}
 	
+	/**
+	 * Constructs a new user with the specified
+	 * 
+	 * @param login {@link String} login
+	 * @param name {@link String} name
+	 * @param email {@link String} email address
+	 * @param role {@link UserRole} role this user
+	 * @param status {@link UserStatus} status this user
+	 */
 	public User(String login, String name, String email, UserRole role, UserStatus status) {
 		this.login = login;
 		this.name = name;
@@ -31,6 +61,16 @@ public class User extends Entity {
 		this.status = status;
 	}
 
+	/**
+	 * Constructs a new user with the specified
+	 * 
+	 * @param login {@link String} login
+	 * @param name {@link String} name
+	 * @param email {@link String} email address
+	 * @param phone {@link String} phone number
+	 * @param role {@link UserRole} role this user
+	 * @param status {@link UserStatus} status this user
+	 */
 	public User(String login, String name, String email, String phone, UserRole role, UserStatus status) {
 		this.login = login;
 		this.name = name;

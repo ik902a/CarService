@@ -11,39 +11,36 @@ import by.epam.learn.controller.command.PagePath;
 import by.epam.learn.controller.command.RequestParameter;
 import by.epam.learn.controller.command.Router;
 import by.epam.learn.controller.command.Router.RouteType;
-import by.epam.learn.entity.Order;
 import by.epam.learn.exception.ServiceException;
-
-import by.epam.learn.model.service.impl.OrderServiceImpl;
+import by.epam.learn.model.service.impl.PriceServiceImpl;
 
 /**
- * The {@code UpdateActiveOrderStatusCommand} class changes order status and set mechanic for this order
+ * The {@code DeletePriceCommand} class deletes price
  * 
  * @author Ihar Klepcha
  */
-public class UpdateActiveOrderStatusCommand implements Command {
+public class DeletePriceCommand implements Command {
 	public static Logger log = LogManager.getLogger();
-    private final OrderServiceImpl service;
+    private final PriceServiceImpl service;
 
-    public UpdateActiveOrderStatusCommand(OrderServiceImpl service) {
+    public DeletePriceCommand(PriceServiceImpl service) {
         this.service = service;
     }
 
 	@Override
 	public Router execute(HttpServletRequest request) {
 		Router router;
-		String mechanicId = request.getParameter(RequestParameter.MECHANIC_ID);
-		Order order = (Order) request.getSession().getAttribute(RequestParameter.ORDER);
+		String priceIdValue = request.getParameter(RequestParameter.ID);
 		try {
-			boolean isChanged = service.updateActiveStatus(order, mechanicId);
-			if (isChanged) {
+			boolean isDeleted = service.delete(priceIdValue);
+			if (isDeleted) {
 				router = new Router(PagePath.PROFILE_REDIRECT, RouteType.REDIRECT);
 			} else {
 				router = new Router(PagePath.ERROR, RouteType.REDIRECT);
 			}
 		} catch (ServiceException e) {
 			request.setAttribute(AttributeParameter.EXCEPTION, e);
-			log.error("exception while updating order", e);
+			log.error("exception while deleting price", e);
 			router = new Router(PagePath.ERROR, RouteType.FORWARD);
 		}
 		return router;

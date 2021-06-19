@@ -2,6 +2,12 @@ package by.epam.learn.entity;
 
 import java.time.LocalDate;
 
+/**
+ * The {@code Order} class describes the entity order
+ * 
+ * @author Ihar Klepcha
+ * @see Entity
+ */
 public class Order extends Entity {
 	private static final long serialVersionUID = 1L;
 	private long orderId;
@@ -12,9 +18,23 @@ public class Order extends Entity {
 	private LocalDate date;
 	private long mechanicId;
 	
+	/**
+	 * Constructs a new order
+	 */
 	public Order() {
 	}
 
+	/**
+	 * Constructs a new order with the specified
+	 * 
+	 * @param orderId {@link long} order id
+	 * @param car {@link Car} car
+	 * @param workType {@link WorkType} type of work
+	 * @param message {@link String} message
+	 * @param orderStatus {@link OrderStatus} status this order
+	 * @param date {@link LocalDate} date
+	 * @param mechanicId {@link long} mechanic for this order
+	 */
 	public Order(long orderId, Car car, WorkType workType, String message, OrderStatus status, LocalDate date,
 			long mechanicId) {
 		this.orderId = orderId;
@@ -26,6 +46,15 @@ public class Order extends Entity {
 		this.mechanicId = mechanicId;
 	}
 	
+	/**
+	 * Constructs a new order with the specified
+	 * 
+	 * @param car {@link Car} car
+	 * @param workType {@link WorkType} type of work
+	 * @param message {@link String} message
+	 * @param orderStatus {@link OrderStatus} status this order
+	 * @param date {@link LocalDate} date
+	 */
 	public Order(Car car, WorkType workType, String message, OrderStatus status, LocalDate date) {
 		this.car = car;
 		this.workType = workType;
