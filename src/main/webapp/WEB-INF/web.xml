@@ -31,5 +31,15 @@
 			<taglib-location>/WEB-INF/tld/taglib.tld</taglib-location>
 		</taglib>
 	</jsp-config>
+	
+		<error-page>
+	<exception-type> java.lang.Exception</exception-type>
+	<location>/pages/error.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>500</error-code>
+		<location>/pages/error.jsp</location>
+	</error-page>
 
 </web-app>
