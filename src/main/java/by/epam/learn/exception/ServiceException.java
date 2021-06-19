@@ -1,5 +1,11 @@
 package by.epam.learn.exception;
 
+/**
+ * The {@code ServiceException} class describes the exception in service
+ * 
+ * @author Ihar Klepcha
+ * @see Exception
+ */
 public class ServiceException extends Exception {
 	private static final long serialVersionUID = 1L;
 

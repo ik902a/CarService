@@ -2,7 +2,11 @@ package by.epam.learn.model.dao;
 
 import by.epam.learn.entity.WorkType;
 
-public interface WorkTypeDao extends BaseDao<Integer, WorkType> {
-	//List<WorkType> findAllWorkType() throws DaoException;
-
+/**
+ * The {@code WorkTypeDao} interface for working with database table work_types
+ * 
+ * @author Ihar Klepcha
+ * @see BaseDao
+ */
+public interface WorkTypeDao extends BaseDao<Long, WorkType> {
 }

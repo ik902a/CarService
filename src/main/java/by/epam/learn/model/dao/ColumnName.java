@@ -1,5 +1,10 @@
 package by.epam.learn.model.dao;
 
+/**
+ * The {@code ColumnName} class describes all column name
+ * 
+ * @author Ihar Klepcha
+ */
 public class ColumnName {
 	//users
 	public static final String USERS_IDUSER = "iduser";
@@ -10,7 +15,7 @@ public class ColumnName {
 	public static final String USERS_PHONE = "phone";
 	public static final String USERS_ROLE = "role";
 	public static final String USERS_STATUS = "status";
-	// cars
+	//cars
 	public static final String CARS_IDCAR = "idcar";
 	public static final String CARS_USER_ID = "user_id";
 	public static final String CARS_VIN = "vin";
@@ -20,7 +25,7 @@ public class ColumnName {
 	public static final String CARS_FUEL = "fuel_type";
 	public static final String CARS_VOLUME = "volume";
 	public static final String CARS_TRANSMISSION = "transmission";
-	// work_types
+	//work_types
 	public static final String WORK_TYPES_IDWORKTYPE = "idworktype";
 	public static final String WORK_TYPSE_WORK_TYPE = "work_type";
 	//orders
@@ -36,7 +41,7 @@ public class ColumnName {
 	public static final String PRICES_OPERATION = "operation";
 	public static final String PRICES_PRICE = "price";
 	public static final String PRICES_WORK_TYPE_ID = "work_type_id";
-	//Invoices
+	//invoices
 	public static final String INVOICES_IDINVOICE = "idinvoice";
 	public static final String INVOICES_USER_ID = "user_id";
 	public static final String INVOICES_PRICE_ID = "price_id";
@@ -44,5 +49,4 @@ public class ColumnName {
 
 	private ColumnName() {
 	}
-
 }

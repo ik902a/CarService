@@ -10,6 +10,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.mysql.cj.jdbc.Driver;
 
+/**
+ *  The {@code ConnectionFactory} class creates connections
+ * 
+ * @author Ihar Klepcha
+ */
 final class ConnectionFactory {
 	public static Logger log = LogManager.getLogger();
 	private static final ResourceBundle bundle;
@@ -26,7 +31,7 @@ final class ConnectionFactory {
 		try {			
 			DriverManager.registerDriver(new Driver());
 		} catch (SQLException e) {
-			log.fatal("ERROR driver doesn't found", e);//TODO  + driver name
+			log.fatal("ERROR driver doesn't found", e);
 			throw new RuntimeException("driver doesn't found", e);
 		}
 		DATABASE_URL = bundle.getString(DB_URL);
@@ -37,6 +42,12 @@ final class ConnectionFactory {
 	ConnectionFactory() {
 	}
 
+	/**
+	 * Creates a connection to the database
+	 * 
+	 * @return {@link Connection} connection to the database
+	 * @throws SQLException
+	 */
 	static Connection createConnection() throws SQLException {
 		return DriverManager.getConnection(DATABASE_URL, DATABASE_USER_NAME, DATABASE_PASSWORD);
 	}

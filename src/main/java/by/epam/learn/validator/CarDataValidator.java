@@ -6,6 +6,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The {@code CarDateValidator} class validates car info
+ * 
+ * @author Ihar Klepcha
+ */
 public class CarDataValidator {
 	private static final Pattern VIN_PATTERN = Pattern.compile("^(?i)[A-HJ-NPR-Z0-9]{17}$");
     private static final Pattern STRING_PATTERN = Pattern.compile("^[0-9a-zA-Zа-яёА-ЯЁ\\-\\s]{1,45}$");
@@ -15,6 +20,12 @@ public class CarDataValidator {
     private CarDataValidator() {
     }
     
+    /**
+  	 * Checks if vin number is valid
+  	 * 
+  	 * @param inputtedData {@link String} data
+  	 * @return boolean true if data is valid, else false
+  	 */
     public static boolean isVin(String inputtedData) {
         if (inputtedData == null || inputtedData.isBlank()) {
         	return false;
@@ -23,6 +34,12 @@ public class CarDataValidator {
         return matcher.matches();
     }
     
+    /**
+  	 * Checks if data is valid
+  	 * 
+  	 * @param inputtedData {@link String} data
+  	 * @return boolean true if data is valid, else false
+  	 */
     public static boolean isString(String inputtedData) {
         if(inputtedData == null || inputtedData.isBlank()) {
         	return false;
@@ -31,6 +48,12 @@ public class CarDataValidator {
         return matcher.matches();
     }
     
+    /**
+  	 * Checks if year of production is valid
+  	 * 
+  	 * @param inputtedData {@link String} data
+  	 * @return boolean true if data is valid, else false
+  	 */
     public static boolean isYear(String inputtedData) {
         if (inputtedData == null || inputtedData.isBlank()) {
         	return false;
@@ -39,6 +62,12 @@ public class CarDataValidator {
         return matcher.matches();
     }
     
+    /**
+  	 * Checks if volume engine is valid
+  	 * 
+  	 * @param inputtedData {@link String} data
+  	 * @return boolean true if data is valid, else false
+  	 */
     public static boolean isVolume(String inputtedData) {
         if (inputtedData == null || inputtedData.isBlank()) {
         	return false;
@@ -46,50 +75,58 @@ public class CarDataValidator {
         Matcher matcher = VOLUME_PATTERN.matcher(inputtedData);
         return matcher.matches();
     }
+        
+    /**
+	 * Checks if data is not empty
+	 * 
+	 * @param inputtedData {@link String} data
+	 * @return boolean true if data is valid, else false
+	 */
+	public static boolean isEmpty(String inputtedData) {	
+		return inputtedData == null;
+	}
     
-    public static boolean isEmpty(String inputtedData) {
-    	boolean result = false;
-        if(inputtedData == null || inputtedData.isBlank()) {
-        	result = true;
-        }
-        return result;
-    }
-    
-    public static boolean areValidData(Map<String, String> userData) {
+	/**
+	 * Checks for invalid car data
+	 * 
+	 * @param carData {@link Map} of {@link String} and {@link String} car data values
+	 * @return boolean true if car info is valid, else false
+	 */
+    public static boolean areValidData(Map<String, String> carData) {
         boolean valid = true;
-        String vinValue = userData.get(VIN_KEY);
+        String vinValue = carData.get(VIN_KEY);
         if (!isVin(vinValue)) {
-            userData.put(VIN_KEY, vinValue + INCORRECT_VALUE);
+            carData.put(VIN_KEY, vinValue + INCORRECT_VALUE);
             valid = false;
         }
-        String brandValue = userData.get(BRAND_KEY);
+        String brandValue = carData.get(BRAND_KEY);
         if (!isString(brandValue)) {
-            userData.put(BRAND_KEY, brandValue + INCORRECT_VALUE);
+            carData.put(BRAND_KEY, brandValue + INCORRECT_VALUE);
             valid = false;
         }
-        String modelValue = userData.get(MODEL_KEY);
+        String modelValue = carData.get(MODEL_KEY);
         if (!isString(modelValue)) {
-            userData.put(MODEL_KEY, modelValue + INCORRECT_VALUE);
+            carData.put(MODEL_KEY, modelValue + INCORRECT_VALUE);
             valid = false;
         }
-        String fuelValue = userData.get(FUEL_KEY);
+        String fuelValue = carData.get(FUEL_KEY);
         if (isEmpty(fuelValue)) {
-            userData.put(FUEL_KEY, INCORRECT_VALUE);
+            carData.put(FUEL_KEY, INCORRECT_VALUE);
             valid = false;
         }
-        String yearValue = userData.get(YEAR_KEY);
+        String yearValue = carData.get(YEAR_KEY);
         if (!isYear(yearValue)) {
-            userData.put(YEAR_KEY, yearValue + INCORRECT_VALUE);
+            carData.put(YEAR_KEY, yearValue + INCORRECT_VALUE);
             valid = false;
         }
-        String volumeValue = userData.get(VOLUME_KEY);
+        String volumeValue = carData.get(VOLUME_KEY);
         if (!isVolume(yearValue)) {
-            userData.put(VOLUME_KEY, volumeValue + INCORRECT_VALUE);
+            carData.put(VOLUME_KEY, volumeValue + INCORRECT_VALUE);
             valid = false;
         }
-        String transmissionValue = userData.get(TRANSMISSION_KEY);
+        String transmissionValue = carData.get(TRANSMISSION_KEY);
         if (isEmpty(transmissionValue)) {
-            userData.put(TRANSMISSION_KEY, INCORRECT_VALUE);
+            carData.put(TRANSMISSION_KEY, INCORRECT_VALUE);
             valid = false;
         }
         return valid;

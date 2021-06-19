@@ -1,5 +1,11 @@
 package by.epam.learn.exception;
 
+/**
+ * The {@code DaoException} class describes the exception in DAO
+ * 
+ * @author Ihar Klepcha
+ * @see Exception
+ */
 public class DaoException extends Exception {
 	private static final long serialVersionUID = 1L;
 

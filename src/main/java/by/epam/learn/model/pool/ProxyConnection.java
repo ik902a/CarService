@@ -20,19 +20,36 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+/**
+ * The {@code ProxyConnection} class is wrapper for connection, changed the body of method close of class
+ * Connection, add method completelyClose
+ * 
+ * @author Ihar Klepcha
+ * @see Connection
+ */
 public class ProxyConnection implements Connection {
 	private Connection connection;
 
+	/**
+	 * Constructs a new ProxyConnection with the specified connection
+	 * 
+	 * @param connection {@link Connection} connection to the database
+	 */
 	ProxyConnection(Connection connection) {
 		this.connection = connection;
 	}
 
+	/**
+	 * Closes the connection to the database
+	 * 
+	 * @throws SQLException
+	 */
 	void completelyClose() throws SQLException {
 		connection.close();
 	}
 
 	@Override
-	public void close() {
+	public void close() throws SQLException {
 		ConnectionPool.getInstance().releaseConnection(this);
 	}
 

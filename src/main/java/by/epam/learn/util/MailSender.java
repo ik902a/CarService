@@ -10,7 +10,6 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -18,8 +17,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import by.epam.learn.entity.EmailMessage;
-import by.epam.learn.exception.MailException;
 
+/**
+ * The {@code MailSender} utility is responsible for sending messages
+ * 
+ * @author Ihar Klepcha
+ */
 public class MailSender {
 	public static Logger log = LogManager.getLogger();
 	
@@ -42,6 +45,12 @@ public class MailSender {
 	private MailSender() {
 	}
 
+	/**
+	 * Sends message
+	 * 
+	 * @param emailMessage {@link EmailMessage} email message entity
+	 * @throws MessagingException
+	 */
 	public static void send(EmailMessage emailMessage) throws MessagingException {
 		Session mailSession = Session.getDefaultInstance(properties, new Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
@@ -49,25 +58,13 @@ public class MailSender {
 						properties.getProperty(MAIL_USER_PASSWORD));
 			}
 		});
-		
 		String sendToEmail = emailMessage.getRecipient();
-//		try {
 			Message message = new MimeMessage(mailSession);
-			//message.setRecipient(Message.RecipientType.TO, new InternetAddress(sendToEmail));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(sendToEmail));
 			message.setSubject(emailMessage.getSubject());
 			message.setContent(emailMessage.getMessage(), TYPE);
 			log.debug("Email {} try sent", emailMessage);
 			Transport.send(message);
 			log.info("Email {} sent successfully...", emailMessage);
-			//DEPLICATE
-//			log.info("Email {} sent successfully...", emailMessage);
-//		} catch (AddressException e) {
-//			log.error("Invalid address: " + sendToEmail + " " + e);
-//			throw new MailException("Invalid address: " + sendToEmail, e);
-//		} catch (MessagingException e) {
-//			log.error("Error generating or sending message: " + e);
-//			throw new MailException("Error generating or sending message: ", e);
-//		}
 	}
 }

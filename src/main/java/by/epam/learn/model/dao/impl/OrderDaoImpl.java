@@ -8,38 +8,47 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import by.epam.learn.entity.Order;
 import by.epam.learn.entity.OrderStatus;
+import by.epam.learn.exception.ConnectionPoolException;
 import by.epam.learn.exception.DaoException;
 import by.epam.learn.model.dao.OrderDao;
 import by.epam.learn.model.pool.ConnectionPool;
 
+/**
+ * The {@code OrderDaoImpl} class works with database table orders
+ * 
+ * @author Ihar Klepcha
+ * @see OrderDao
+ */
 public class OrderDaoImpl implements OrderDao {
 	public static Logger log = LogManager.getLogger();
 	private static final OrderDao instance = new OrderDaoImpl();
-	
 	private static final String SQL_ADD_ORDER = "INSERT INTO orders(car_id, work_type_id, message, "
 			+ "order_status, date) VALUES (?, ?, ?, ?, ?)";
-	private static final String SQL_FIND_ORDER_BY_USER = "SELECT idorder, message, order_status, date, mechanic_id"
-			+ "work_types.idworktype, work_types.work_type, cars.idcar, cars.user_id, cars.vin, cars.brand, "
-			+ "cars.model, cars.year, cars.fuel_type, cars.volume, cars.transmission "
+	private static final String SQL_FIND_ALL_ORDER = "SELECT idorder, message, order_status, date, "
+			+ "mechanic_id, work_types.idworktype, work_types.work_type, cars.idcar, cars.vin, cars.brand, "
+			+ "cars.model, cars.year, cars.fuel_type, cars.volume, cars.transmission, users.iduser, "
+			+ "users.login, users.name, users.email, users.phone, users.role, users.status "
 			+ "FROM orders "
 			+ "JOIN work_types ON orders.work_type_id=work_types.idworktype "
 			+ "JOIN cars ON orders.car_id=cars.idcar "
-			+ "WHERE orders.user_id=?";
-	private static final String SQL_FIND_ALL_ORDER = "SELECT idorder, message, order_status, date, mechanic_id"
-			+ "work_types.idworktype, work_types.work_type, cars.idcar, cars.user_id, cars.vin, cars.brand, "
-			+ "cars.model, cars.year, cars.fuel_type, cars.volume, cars.transmission "
+			+ "JOIN users ON cars.user_id=users.iduser "
+			+ "WHERE orders.order_status!='COMPLETED'";
+	private static final String SQL_FIND_ORDER_BY_MECHANIC = "SELECT idorder, message, order_status, date, "
+			+ "mechanic_id, work_types.idworktype, work_types.work_type, cars.idcar, cars.vin, cars.brand, "
+			+ "cars.model, cars.year, cars.fuel_type, cars.volume, cars.transmission, users.iduser, "
+			+ "users.login, users.name, users.email, users.phone, users.role, users.status "
 			+ "FROM orders "
 			+ "JOIN work_types ON orders.work_type_id=work_types.idworktype "
-			+ "JOIN cars ON orders.car_id=cars.idcar ";
-	private static final String SQL_UPDATE_ORDER = "UPDATE orders SET order_status=?, mechanic_id=?"
-			+ "WHERE idorder=?";
+			+ "JOIN cars ON orders.car_id=cars.idcar "
+			+ "JOIN users ON cars.user_id=users.iduser "
+			+ "WHERE orders.mechanic_id=? AND orders.order_status='ACTIVE'";
+	private static final String SQL_UPDATE_STATUS = "UPDATE orders SET order_status=?, mechanic_id=? WHERE idorder=?";
 
 	private OrderDaoImpl() {
 	}
@@ -48,7 +57,6 @@ public class OrderDaoImpl implements OrderDao {
 		return instance;
 	}
 
-	
 	@Override
 	public boolean create(Order order) throws DaoException {
 		boolean isAdded;
@@ -59,48 +67,18 @@ public class OrderDaoImpl implements OrderDao {
 			String message = order.getMessage();
 			OrderStatus orderStatus = order.getStatus();
 			LocalDate date = order.getDate();
-			
-			//Blob message = (Blob) order.getMessage();
-			//Timestamp sqlDate = new Timestamp(date);
-		
 			statement.setLong(1, carId);
 			statement.setLong(2, workTypeId);
-			//statement.setString(3, message);
 			statement.setObject(3, message);
 			statement.setString(4, orderStatus.toString());
-			
 			statement.setObject(5, Date.valueOf(date));
 			int rowCount = statement.executeUpdate();
-			if (rowCount != 0) {
-				isAdded = true;
-				log.info("Order added successfully");
-			} else {
-				log.error("order {} wasn't added", order);
-				isAdded = false;
-			}
-		} catch (SQLException e) {
-			log.error("Exception while adding new order", e);
-			throw new DaoException("Exception while adding new order", e);
-		}
-		return isAdded;
-	}
-	
-	@Override
-	public Optional<Order> findOrderByUser(long userId) throws DaoException {
-
-		Optional<Order> orders = Optional.empty();
-		try (Connection connection = ConnectionPool.getInstance().getConnection();
-				PreparedStatement statement = connection.prepareStatement(SQL_FIND_ORDER_BY_USER)) {
-			statement.setLong(1, userId);
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				Order order = DaoEntityBuilder.buildOrder(resultSet);
-				orders = Optional.of(order);
-			}
-		} catch (SQLException e) {
+			isAdded = (rowCount != 0);
+		} catch (ConnectionPoolException | SQLException e) {
+			log.error("exception while adding new order", e);
 			throw new DaoException("database error", e);
 		}
-		return orders;
+		return isAdded;
 	}
 	
 	@Override
@@ -108,14 +86,31 @@ public class OrderDaoImpl implements OrderDao {
 		List<Order> orders = new ArrayList<>();
 		try (Connection connection = ConnectionPool.getInstance().getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL_ORDER)) {
-
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-
 				Order order = DaoEntityBuilder.buildOrder(resultSet);
-				orders = List.of(order);
+				orders.add(order);
 			}
-		} catch (SQLException e) {
+		} catch (ConnectionPoolException | SQLException e) {
+			log.error("exception while finding an order", e);
+			throw new DaoException("database error", e);
+		}
+		return orders;
+	}
+	
+	@Override
+	public List<Order> findOrderByMechanic(long mechanicId) throws DaoException {
+		List<Order> orders = new ArrayList<>();
+		try (Connection connection = ConnectionPool.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_FIND_ORDER_BY_MECHANIC)) {
+			statement.setLong(1, mechanicId);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				Order order = DaoEntityBuilder.buildOrder(resultSet);
+				orders.add(order);
+			}
+		} catch (ConnectionPoolException | SQLException e) {
+			log.error("exception while finding an order", e);
 			throw new DaoException("database error", e);
 		}
 		return orders;
@@ -125,51 +120,29 @@ public class OrderDaoImpl implements OrderDao {
 	public boolean update(Order order) throws DaoException {
 		boolean isUpdate;
 		try (Connection connection = ConnectionPool.getInstance().getConnection();
-				PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_ORDER)) {
+				PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_STATUS)) {
 			long orderId = order.getOrderId();
-			OrderStatus status = order.getStatus();
 			long mechanicId = order.getMechanicId();
+			OrderStatus status = order.getStatus();
 			statement.setString(1, status.toString());
 			statement.setLong(2, mechanicId);
 			statement.setLong(3, orderId);
-
 			int rowCount = statement.executeUpdate();
-			if (rowCount != 0) {
-				isUpdate = true;
-				log.info("Order updated successfully");
-			} else {
-				log.error("Order {} wasn't updayed", order);
-				isUpdate = false;
-			}
-		} catch (SQLException e) {
-			log.error("Exception while update order", e);
-			throw new DaoException("Exception while update order", e);
+			isUpdate = (rowCount != 0);
+		} catch (ConnectionPoolException | SQLException e) {
+			log.error("exception while update order", e);
+			throw new DaoException("database error", e);
 		}
 		return isUpdate;
 	}
 	
-	
-	
-	
-
 	@Override
-	public Order findEntityById(Integer id) throws DaoException {
-		// TODO Auto-generated method stub
-		return null;
+	public Order findEntityById(Long id) throws DaoException {
+		throw new UnsupportedOperationException("operation not supported for class " + this.getClass().getName());
 	}
 
 	@Override
-	public boolean delete(Order t) throws DaoException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean delete(Long id) throws DaoException {
+		throw new UnsupportedOperationException("operation not supported for class " + this.getClass().getName());
 	}
-
-	@Override
-	public boolean delete(Integer id) throws DaoException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-
 }

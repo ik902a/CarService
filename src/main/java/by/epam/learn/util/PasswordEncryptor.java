@@ -8,6 +8,11 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The {@code PasswordEncryptor} utility is responsible for encrypting passwords
+ * 
+ * @author Ihar Klepcha
+ */
 public class PasswordEncryptor {
 	public static Logger log = LogManager.getLogger();
 	private static final String MESSAGE_DIGEST_ALGORITHM = "SHA-1";
@@ -16,6 +21,12 @@ public class PasswordEncryptor {
 	private PasswordEncryptor() {
 	}
 
+	/**
+	 * Encrypts password
+	 * 
+	 * @param password {@link String} password
+	 * @return {@link String} encrypted password
+	 */
 	public static String encrypt(String password) {
 		String encryptedPassword;
 		try {
@@ -26,14 +37,20 @@ public class PasswordEncryptor {
 			encryptedPassword = bigInt.toString(16);
 		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 			log.error("incorrect algorithm or encoding impossible", e);
-			encryptedPassword = password;
+			encryptedPassword = String.valueOf(password.hashCode());
 		}
 		return encryptedPassword;
 	}
 	
+	/**
+	 * Checks password
+	 * 
+	 * @param password {@link String} password
+	 * @param hashedPassword {@link String} encrypted password
+	 * @return boolean true if the password is correct, else false
+	 */
 	public static boolean checkPassword(String password, String hashedPassword) {
 		String checkedPassword = encrypt(password);
 		return checkedPassword.equals(hashedPassword);
-		
 	}
 }

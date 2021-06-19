@@ -10,6 +10,12 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The {@code FooterTag} class is the custom tag for footer
+ * 
+ * @author Ihar Klepcha
+ * @see TagSupport
+ */
 public class FooterTag extends TagSupport {
 	public static Logger log = LogManager.getLogger();
 	private static final long serialVersionUID = 1L;
@@ -29,8 +35,8 @@ public class FooterTag extends TagSupport {
 			out.write(P_TAG_END);
 			out.write(FOOTER_TAG_END);
 		} catch (IOException e) {
-			log.error(" I/O error occurs", e);
-			throw new JspTagException(e);
+			log.error("I/O error occurs", e);
+			throw new JspTagException("I/O error occurs", e);
 		}
 		return SKIP_BODY;
 	}
