@@ -41,14 +41,11 @@ public class RoleFilter implements Filter {
 		log.info("ROLE filter");
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpSession session = httpRequest.getSession(true);
-		log.debug("role filter ---------role: {}", session.getAttribute(RequestParameter.ROLE));
 		if (session.getAttribute(RequestParameter.ROLE) == null) {
-			log.debug("role filter ---------role: зашел в if");
 			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher(indexPath);
 			dispatcher.forward(request, response);
 			return;
 		}
-		log.debug("role filter ---------command: {}", request.getParameter("command"));
 		chain.doFilter(request, response);
 	}
 }
