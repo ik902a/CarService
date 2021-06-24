@@ -14,7 +14,13 @@ import javax.servlet.annotation.WebInitParam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@WebFilter(filterName = "Encoding", urlPatterns = { "/*" }, initParams = {
+/**
+ * The {@code EncodingFilter} class for setting the encoding
+ * 
+ * @author Ihar Klepcha
+ * @see Filter
+ */
+@WebFilter(filterName = "EncodingFilter", urlPatterns = { "/*" }, initParams = {
 		@WebInitParam(name = "encoding", value = "UTF-8", description = "Encoding Param") })
 public class EncodingFilter implements Filter {
 	public static Logger log = LogManager.getLogger();
