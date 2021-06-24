@@ -13,7 +13,6 @@ import by.epam.learn.controller.command.Router;
 import by.epam.learn.controller.command.AttributeParameter;
 import by.epam.learn.controller.command.Router.RouteType;
 import by.epam.learn.entity.User;
-import by.epam.learn.entity.UserRole;
 import by.epam.learn.entity.UserStatus;
 import by.epam.learn.exception.ServiceException;
 import by.epam.learn.model.service.impl.UserServiceImpl;
@@ -48,7 +47,7 @@ public class LogInCommand implements Command {
 		}
 		if (optionalUser.isPresent()) {
 			User user = optionalUser.get();
-			UserRole role = user.getRole();
+			String role = user.getRole().toString();
 			UserStatus status = user.getStatus();
 			if (status == UserStatus.ACTIVE) {
 				request.getSession().setAttribute(AttributeParameter.ROLE, role);

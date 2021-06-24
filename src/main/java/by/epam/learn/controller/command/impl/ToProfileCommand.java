@@ -49,7 +49,7 @@ public class ToProfileCommand implements Command {
 	@Override
 	public Router execute(HttpServletRequest request) {
 		Router router;
-		UserRole currentRole = (UserRole) request.getSession().getAttribute(RequestParameter.ROLE);
+		UserRole currentRole = UserRole.valueOf((String) request.getSession().getAttribute(RequestParameter.ROLE));
 		try {
 			switch (currentRole) {
 			case ADMIN:
