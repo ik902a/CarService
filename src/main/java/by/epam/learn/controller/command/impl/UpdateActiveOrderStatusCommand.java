@@ -33,8 +33,9 @@ public class UpdateActiveOrderStatusCommand implements Command {
 	public Router execute(HttpServletRequest request) {
 		Router router;
 		String mechanicId = request.getParameter(RequestParameter.MECHANIC_ID);
-		Order order = (Order) request.getSession().getAttribute(RequestParameter.ORDER);
-		try {
+		String orderId = request.getParameter(RequestParameter.ORDER_ID);
+		try {		
+			Order order = service.findOrderById(orderId);
 			boolean isChanged = service.updateActiveStatus(order, mechanicId);
 			if (isChanged) {
 				router = new Router(PagePath.PROFILE_REDIRECT, RouteType.REDIRECT);
