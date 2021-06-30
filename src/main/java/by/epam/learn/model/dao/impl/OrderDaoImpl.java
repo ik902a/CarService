@@ -39,6 +39,15 @@ public class OrderDaoImpl implements OrderDao {
 			+ "JOIN cars ON orders.car_id=cars.idcar "
 			+ "JOIN users ON cars.user_id=users.iduser "
 			+ "WHERE orders.order_status!='COMPLETED'";
+	private static final String SQL_FIND_ORDER_BY_ID = "SELECT idorder, message, order_status, date, "
+			+ "mechanic_id, work_types.idworktype, work_types.work_type, cars.idcar, cars.vin, cars.brand, "
+			+ "cars.model, cars.year, cars.fuel_type, cars.volume, cars.transmission, users.iduser, "
+			+ "users.login, users.name, users.email, users.phone, users.role, users.status "
+			+ "FROM orders "
+			+ "JOIN work_types ON orders.work_type_id=work_types.idworktype "
+			+ "JOIN cars ON orders.car_id=cars.idcar "
+			+ "JOIN users ON cars.user_id=users.iduser "
+			+ "WHERE orders.idorder=?";
 	private static final String SQL_FIND_ORDER_BY_MECHANIC = "SELECT idorder, message, order_status, date, "
 			+ "mechanic_id, work_types.idworktype, work_types.work_type, cars.idcar, cars.vin, cars.brand, "
 			+ "cars.model, cars.year, cars.fuel_type, cars.volume, cars.transmission, users.iduser, "
@@ -99,6 +108,21 @@ public class OrderDaoImpl implements OrderDao {
 	}
 	
 	@Override
+	public Order findEntityById(Long id) throws DaoException {
+		Order order;
+		try (Connection connection = ConnectionPool.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_FIND_ORDER_BY_ID)) {
+			statement.setLong(1, id);
+			ResultSet resultSet = statement.executeQuery();
+			order = (resultSet.next()) ? DaoEntityBuilder.buildOrder(resultSet) : new Order();
+		} catch (ConnectionPoolException | SQLException e) {
+			log.error("exception while finding order", e);
+			throw new DaoException("database error", e);
+		}
+		return order;
+	}
+	
+	@Override
 	public List<Order> findOrderByMechanic(long mechanicId) throws DaoException {
 		List<Order> orders = new ArrayList<>();
 		try (Connection connection = ConnectionPool.getInstance().getConnection();
@@ -134,11 +158,6 @@ public class OrderDaoImpl implements OrderDao {
 			throw new DaoException("database error", e);
 		}
 		return isUpdate;
-	}
-	
-	@Override
-	public Order findEntityById(Long id) throws DaoException {
-		throw new UnsupportedOperationException("operation not supported for class " + this.getClass().getName());
 	}
 
 	@Override
