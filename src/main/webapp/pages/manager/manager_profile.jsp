@@ -52,8 +52,8 @@
 											<option value="${ mechanic.userId }"><c:out value="${ mechanic.login }" /></option>
 										</c:forEach>
 									</select>
-									<c:set var="order" value="${ order }" scope="session" />
-									<input type="submit" value='<fmt:message key="button.appoint"/>' />
+								 	<input type="hidden" name="orderId" value="${ order.orderId }" />
+								 	<input type="submit" value='<fmt:message key="button.appoint"/>' />
 								</form>
 							</div></td>
 					</c:if>
