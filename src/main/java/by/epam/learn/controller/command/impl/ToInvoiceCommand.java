@@ -37,8 +37,9 @@ public class ToInvoiceCommand implements Command {
 	@Override
 	public Router execute(HttpServletRequest request) {
 		Router router;
-		Order order = (Order) request.getSession().getAttribute(RequestParameter.ORDER);
+		String orderId = request.getParameter(RequestParameter.ORDER_ID);
 		try {
+			Order order = orderService.findOrderById(orderId);
 			boolean isChanged = orderService.updateCompletedStatus(order);
 			List<Price> prices = priceService.findPriceByWorkType(order);
 			if (!prices.isEmpty() && isChanged) {

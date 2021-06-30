@@ -31,8 +31,9 @@ public class UpdateReadyOrderStatusCommand implements Command {
 	@Override
 	public Router execute(HttpServletRequest request) {
 		Router router;
-		Order order = (Order) request.getSession().getAttribute(RequestParameter.ORDER);
+		String orderId = request.getParameter(RequestParameter.ORDER_ID);
 		try {
+			Order order = service.findOrderById(orderId);
 			boolean isChanged = service.updateReadyStatus(order);
 			if (isChanged) {
 			router = new Router(PagePath.PROFILE_REDIRECT, RouteType.REDIRECT);
