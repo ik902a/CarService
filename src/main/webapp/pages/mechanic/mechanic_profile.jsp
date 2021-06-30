@@ -44,8 +44,8 @@
 							<c:out value="${order.message }" /></td>
 						<td><c:out value="${order.status }" /></td>
 						<td><form name="update" method="POST" action="controller">
-								<c:set var="order" value="${ order }" scope="session" />
 								<input type="hidden" name="command" value="update_ready_order_status" />
+								<input type="hidden" name="orderId" value="${ order.orderId }" />
 								<input type="submit" value='<fmt:message key="button.ready"/>' />
 							</form></td>
 					</tr>
