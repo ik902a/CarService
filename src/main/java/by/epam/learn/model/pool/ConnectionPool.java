@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 
 import by.epam.learn.exception.ConnectionPoolException;
 
-
 /**
  * The {@code ConnectionPool} class is pool of connections used while the system is running
  * 
@@ -38,11 +37,14 @@ public class ConnectionPool {
 	public static ConnectionPool getInstance() {
 		if (!isCreated.get()) {
 			locker.lock();
-			if (instance == null) {
-				instance = new ConnectionPool();
-				isCreated.set(true);
+			try {
+				if (instance == null) {
+					instance = new ConnectionPool();
+					isCreated.set(true);
+				}
+			} finally {
+				locker.unlock();
 			}
-			locker.unlock();
 		}
 		log.debug("created instanse " + instance);
 		return instance;
