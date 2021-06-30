@@ -66,6 +66,19 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return orders;
 	}
+	
+	@Override
+	public Order findOrderById(String orderIdValue) throws ServiceException {
+		Order order;
+		long orderId = Long.parseLong(orderIdValue);
+		try {
+			order = OrderDaoImpl.getInstance().findEntityById(orderId);
+		} catch (DaoException e) {
+			log.error("orders search error", e);
+			throw new ServiceException("orders search error", e);
+		}
+		return order;
+	}
 
 	@Override
 	public List<Order> findOrderByMechanic(User mechanic) throws ServiceException {
