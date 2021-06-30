@@ -32,6 +32,15 @@ public interface OrderService {
 	List<Order> findAllOrder() throws ServiceException;
 	
 	/**
+	 * Finds order in data base by id
+	 * 
+	 * @param orderIdValue {@link String} value order id
+	 * @return {@link Order} received from database if order is found, else empty entity
+	 * @throws ServiceException if {@link DaoException} occurs
+	 */
+	Order findOrderById(String orderIdValue) throws ServiceException;
+	
+	/**
 	 * Finds order by mechanic
 	 * 
 	 * @param mechanic {@link User} mechanic
