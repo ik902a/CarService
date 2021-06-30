@@ -71,7 +71,7 @@
 						<td><div>
 								<form name="update" method="POST" action="controller">
 									<input type="hidden" name="command" value="to_invoice" />
-									<c:set var="order" value="${ order }" scope="session" />
+									<input type="hidden" name="orderId" value="${ order.orderId }" />
 									<input type="submit" value='<fmt:message key="button.ready"/>' />
 								</form>
 						</div></td>
