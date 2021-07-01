@@ -52,6 +52,7 @@ public class SendInvoiceCommand implements Command {
 			request.setAttribute(AttributeParameter.ERROR_MESSAGE, MessageKey.MAKE_CHOICE_MESSAGE);
 			router = new Router(PagePath.TO_INVOICE_REDIRECT, RouteType.FORWARD);
 		}
+		request.getSession().removeAttribute(AttributeParameter.ORDER);
 		return router;
 	}
 }

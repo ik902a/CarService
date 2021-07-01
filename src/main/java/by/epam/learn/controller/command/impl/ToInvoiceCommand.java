@@ -43,6 +43,7 @@ public class ToInvoiceCommand implements Command {
 			boolean isChanged = orderService.updateCompletedStatus(order);
 			List<Price> prices = priceService.findPriceByWorkType(order);
 			if (!prices.isEmpty() && isChanged) {
+				request.getSession().setAttribute(AttributeParameter.ORDER, order);
 				request.setAttribute(AttributeParameter.PRICE_LIST, prices);
 			}
 			router = new Router(PagePath.INVOICE, RouteType.FORWARD);
