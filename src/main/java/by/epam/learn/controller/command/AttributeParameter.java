@@ -19,6 +19,7 @@ public final class AttributeParameter {
 	public static final String ROLE = "role";
 	//Entity
 	public static final String PRICE = "price";
+	public static final String ORDER = "order";
 	//List
 	public static final String USER_LIST = "userList";
 	public static final String PRICE_LIST = "priceList";
