@@ -1,5 +1,6 @@
 package by.epam.learn.util;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import by.epam.learn.entity.EmailMessage;
@@ -66,7 +67,7 @@ public class EmailMessageFactory {
 	 * @return {@link EmailMessage} email message entity
 	 */
 	public static EmailMessage createInvoiceMessage(List<Price> prices, String recipient) {
-		double sum = 0;
+		BigDecimal sum = new BigDecimal(0);
 		int number = 1;
 		StringBuilder builder = new StringBuilder();
 		builder.append(H1_STARTING_TAG);
@@ -96,7 +97,7 @@ public class EmailMessageFactory {
 			builder.append(price.getPrice());
 			builder.append(TD_CLOSING_TAG);
 			builder.append(TR_CLOSING_TAG);
-			sum += price.getPrice();
+			sum = sum.add(BigDecimal.valueOf(price.getPrice()));
 		}
 		builder.append(TABLE_CLOSING_TAG);
 		builder.append(P_STARTING_TAG);
