@@ -4,42 +4,28 @@
 	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
-	<servlet>
-		<description>
-		</description>
-		<display-name>AjaxServlet</display-name>
-		<servlet-name>AjaxServlet</servlet-name>
-		<servlet-class>by.epam.learn.controller.AjaxServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>AjaxServlet</servlet-name>
-		<url-pattern>/AjaxServlet</url-pattern>
-	</servlet-mapping>
-
-	
-	<!-- <display-name>FirstProject</display-name> -->
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
-	</welcome-file-list>
-	
+	</welcome-file-list> 
 	<jsp-config>
 		<taglib>
 			<taglib-uri>customtags</taglib-uri>
 			<taglib-location>/WEB-INF/tld/taglib.tld</taglib-location>
 		</taglib>
 	</jsp-config>
-	
-		<error-page>
-	<exception-type> java.lang.Exception</exception-type>
-	<location>/pages/error.jsp</location>
+	<error-page>
+		<exception-type>java.lang.RuntimeException</exception-type>
+		<location>/pages/error.jsp</location>
 	</error-page>
-	
 	<error-page>
 		<error-code>500</error-code>
 		<location>/pages/error.jsp</location>
 	</error-page>
-
+		<error-page>
+		<error-code>404</error-code>
+		<location>/pages/error404.jsp</location>
+	</error-page>
 </web-app>
