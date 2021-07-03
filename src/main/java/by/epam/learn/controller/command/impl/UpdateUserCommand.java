@@ -63,23 +63,23 @@ public class UpdateUserCommand implements Command {
 			if (isUpdate) {
 				router = new Router(PagePath.PROFILE_REDIRECT, RouteType.REDIRECT);
 			} else {	
-				loginValue = userData.get(LOGIN_KEY);
-				nameValue = userData.get(NAME_KEY);
-				emailValue = userData.get(EMAIL_KEY);
-				phoneValue = userData.get(PHONE_KEY);
-				if (loginValue.contains(INCORRECT_VALUE)) {
+				String loginCheck = userData.get(LOGIN_KEY);
+				String nameCheck = userData.get(NAME_KEY);
+				String emailCheck = userData.get(EMAIL_KEY);
+				String phoneCheck = userData.get(PHONE_KEY);
+				if (loginCheck.contains(INCORRECT_VALUE)) {
 					errorMessageList.add(MessageKey.INCORRECT_LOGIN_MESSAGE);
 				}
-				if (loginValue.contains(ALREADY_EXISTS)) {
+				if (loginCheck.contains(ALREADY_EXISTS)) {
 					errorMessageList.add(MessageKey.EXISTS_LOGIN_MESSAGE);
 				}
-				if (nameValue.contains(INCORRECT_VALUE)) {
+				if (nameCheck.contains(INCORRECT_VALUE)) {
 					errorMessageList.add(MessageKey.INCORRECT_NAME_MESSAGE);
 				}
-				if (emailValue.contains(INCORRECT_VALUE)) {
+				if (emailCheck.contains(INCORRECT_VALUE)) {
 					errorMessageList.add(MessageKey.INCORRECT_EMAIL_MESSAGE);
 				}
-				if (phoneValue.contains(INCORRECT_VALUE)) {
+				if (phoneCheck.contains(INCORRECT_VALUE)) {
 					errorMessageList.add(MessageKey.INCORRECT_PHONE_MESSAGE);
 				}
 				User user = new User (Long.parseLong(userIdValue), loginValue, nameValue, emailValue, 
