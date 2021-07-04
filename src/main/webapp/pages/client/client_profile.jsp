@@ -8,13 +8,16 @@
 <title><fmt:message key="title.profile" /></title>
 </head>
 <body>
+	<c:if test="${ sessionScope.role != 'CLIENT'}">
+		<jsp:forward page="../../index.jsp" />
+	</c:if>
 	<c:set var="current_page" value="${pageContext.request.requestURI}" scope="session" />
 	<div id="header">
 		<c:import url="../fragments/header.jsp" />
 	</div>
 	<div class="profile-button-group">
 		<div class="profile-button">
-			<form name="car" method="POST" action="controller">
+			<form name="car" method="GET" action="controller">
 				<input type="hidden" name="command" value="to_add_car" /> 
 				<input type="submit" value='<fmt:message key="button.add_car"/>' />
 			</form>
