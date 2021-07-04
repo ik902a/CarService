@@ -8,6 +8,9 @@
 <title><fmt:message key="title.profile" /></title>
 </head>
 <body>
+	<c:if test="${ sessionScope.role != 'MANAGER'}">
+		<jsp:forward page="../../index.jsp" />
+	</c:if>
 	<c:set var="current_page" value="${pageContext.request.requestURI}" scope="session" />
 	<div id="header">
 		<c:import url="../fragments/header.jsp" />
