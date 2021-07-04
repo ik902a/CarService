@@ -8,13 +8,16 @@
 <title><fmt:message key="title.edit_profile" /></title>
 </head>
 <body>
+	<c:if test="${ sessionScope.role != 'ADMIN'}">
+		<jsp:forward page="../../index.jsp" />
+	</c:if>
 	<c:set var="current_page" value="${pageContext.request.requestURI}" scope="session" />
 	<div id="header">
 		<c:import url="../fragments/header.jsp" />
 	</div>
 	<div class="profile-button-group">
 		<div class="profile-button">
-			<form name="user" method="GET" action="controller">
+			<form name="user" method="POST" action="controller">
 				<input type="hidden" name="command" value="to_add_user" /> 
 				<input type="submit" value='<fmt:message key="button.add_user"/>' />
 			</form>
