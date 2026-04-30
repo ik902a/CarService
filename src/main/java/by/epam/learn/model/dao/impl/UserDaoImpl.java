@@ -157,7 +157,7 @@ public class UserDaoImpl implements UserDao {
 			statement.setString(1, login);
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
-				String hashedPassword = resultSet.getNString(USERS_PASSWORD);
+				String hashedPassword = resultSet.getString(USERS_PASSWORD);
 				if (PasswordEncryptor.checkPassword(password, hashedPassword)) {
 					User user = DaoEntityBuilder.buildUser(resultSet);
 					optionalUser = Optional.of(user);

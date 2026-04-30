@@ -1,6 +1,7 @@
 package by.epam.learn.controller.command.impl;
 
-import javax.servlet.http.HttpServletRequest;
+import by.epam.learn.exception.MailException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,7 @@ import by.epam.learn.model.service.impl.InvoiceServiceImpl;
  * @author Ihar Klepcha
  */
 public class SendInvoiceCommand implements Command {
+
 	public static Logger log = LogManager.getLogger();
     private final InvoiceServiceImpl service;
 
@@ -43,7 +45,7 @@ public class SendInvoiceCommand implements Command {
 					log.error("Exception while adding");
 					router = new Router(PagePath.INVOICE, RouteType.FORWARD);
 				}
-			} catch (ServiceException e) {
+			} catch (ServiceException | MailException e) {
 				request.setAttribute(AttributeParameter.EXCEPTION, e);
 				log.error("Exception while adding", e);
 				router = new Router(PagePath.ERROR, RouteType.FORWARD);

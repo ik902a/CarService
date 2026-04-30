@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.mail.MessagingException;
-
+import by.epam.learn.exception.MailException;
+import jakarta.mail.MessagingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,21 +36,20 @@ public class UserServiceImpl implements UserService {
 	private static final String PERCENT = "%";
 
 	@Override
-	public boolean signUp(Map<String, String> userData) throws ServiceException {
+	public boolean signUp(Map<String, String> userData) throws ServiceException, MailException {
 		boolean isSignUp = false;
 		String login = userData.get(LOGIN_KEY);
-		log.debug("Service - login=" + login);
+        log.debug("Service - login={}", login);
 		try {
 			if (UserDaoImpl.getInstance().containsLogin(login)) {
 				userData.put(LOGIN_KEY, login + ALREADY_EXISTS);
 			} else if (UserDataValidator.areValidData(userData)) {
-				log.debug("Service login-" + login);
+                log.debug("Service login-{}", login);
 				String name = userData.get(NAME_KEY);
 				String email = userData.get(EMAIL_KEY);
-				String phone = EMPTY;
-				UserRole role = UserRole.CLIENT;
+                UserRole role = UserRole.CLIENT;
 				UserStatus status = UserStatus.INACTIVE;
-				User user = new User(login, name, email, phone, role, status);
+				User user = new User(login, name, email, EMPTY, role, status);
 				String password = userData.get(PASSWORD_KEY);
 				String hashedPassword = PasswordEncryptor.encrypt(password);
 				isSignUp = UserDaoImpl.getInstance().addUser(user, hashedPassword);
@@ -60,11 +59,14 @@ public class UserServiceImpl implements UserService {
 		        }
 			}
 		} 
-		catch (MessagingException | DaoException e) {
+		catch (DaoException e) {
 			log.error("user creation error", e);
 			throw new ServiceException("user creation error", e);
-		}
-		return isSignUp;
+		} catch (MessagingException e) {
+			log.error("email with user sending error", e);
+			throw new MailException("email with user sending error", e);
+        }
+        return isSignUp;
 	}
 	
 	@Override

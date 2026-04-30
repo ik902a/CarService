@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import by.epam.learn.entity.User;
+import by.epam.learn.exception.MailException;
 import by.epam.learn.exception.ServiceException;
 
 /**
@@ -21,7 +22,7 @@ public interface UserService {
 	 * @return boolean true if the user has been added, else false
 	 * @throws ServiceException if {@link DaoException} occurs
 	 */
-	boolean signUp(Map<String, String> userData) throws ServiceException;
+	boolean signUp(Map<String, String> userData) throws ServiceException, MailException;
 	
 	/**
 	 * Changes the user's status in the data base active 

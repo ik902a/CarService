@@ -1,6 +1,7 @@
 package by.epam.learn.exception;
 
 public class MailException extends Exception {//DEPLICATED
+
 	private static final long serialVersionUID = 1L;
 
 	public MailException() {

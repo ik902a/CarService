@@ -7,6 +7,7 @@ package by.epam.learn.entity;
  * @see Entity
  */
 public class Car extends Entity {
+
 	private static final long serialVersionUID = 1L;
 	private long carId;
 	private User user;
@@ -32,10 +33,10 @@ public class Car extends Entity {
 	 * @param vin {@link String} vin number
 	 * @param brand {@link String} brand a car
 	 * @param model {@link String} model a car
-	 * @param yearPriduction {@link String} year production a car
+	 * @param yearProduction {@link String} year production a car
 	 * @param fuelType {@link String} type of fuel an engine
 	 * @param volumeEngine {@link String} volume engine
-	 * @param transmission type {@link String} type of transmission a car
+	 * @param transmisionType type {@link String} type of transmission a car
 	 */
 	public Car(long carId, User user, String vin, String brand, String model, String yearProduction, String fuelType,
 			String volumeEngine, String transmisionType) {
@@ -57,10 +58,10 @@ public class Car extends Entity {
 	 * @param vin {@link String} vin number
 	 * @param brand {@link String} brand a car
 	 * @param model {@link String} model a car
-	 * @param yearPriduction {@link String} year production a car
+	 * @param yearProduction {@link String} year production a car
 	 * @param fuelType {@link String} type of fuel an engine
 	 * @param volumeEngine {@link String} volume engine
-	 * @param transmission type {@link String} type of transmission a car
+	 * @param transmisionType type {@link String} type of transmission a car
 	 */
 	public Car(User user, String vin, String brand, String model, String yearProduction, String fuelType,
 			String volumeEngine, String transmisionType) {

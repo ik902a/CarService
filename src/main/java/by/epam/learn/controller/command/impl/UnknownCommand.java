@@ -1,6 +1,6 @@
 package by.epam.learn.controller.command.impl;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import by.epam.learn.controller.command.Command;
 import by.epam.learn.controller.command.PagePath;

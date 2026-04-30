@@ -13,9 +13,10 @@ import by.epam.learn.entity.User;
  * @author Ihar Klepcha
  */
 public class EmailMessageFactory {
+
 	private static final String ACTIVATE_SUBJECT = "Activate your account!";
 	private static final String INVOICE_SUBJECT = "M-service, invoice";
-	private static final String HREF_ATTRIBUTE = "href=\"http://localhost:4040/DemoCarService/controller?command=activation&login=";
+	private static final String HREF_ATTRIBUTE = "href=\"http://localhost:9000/DemoCarService/controller?command=activation&login=";
 	private static final String PLACEHOLDER = "\">click here to activate your account in M-service";
 	private static final String INVOICE = "Your invoice";
 	private static final String N = "N";
@@ -37,7 +38,6 @@ public class EmailMessageFactory {
 	private static final String TD_STARTING_TAG = "<td>";
 	private static final String TD_CLOSING_TAG = "</td>";
 
-	
 	/**
 	 * Creates an email message when user signs up
 	 * 
@@ -46,17 +46,14 @@ public class EmailMessageFactory {
 	 */
 	public static EmailMessage createSignUpMessage(User user) {
 		String recipient = user.getEmail();
-		StringBuilder builder = new StringBuilder();
-		builder.append(H1_STARTING_TAG);
-		builder.append(A_STARTING_TAG);
-		builder.append(HREF_ATTRIBUTE);
-		builder.append(user.getLogin());
-		builder.append(PLACEHOLDER);
-		builder.append(A_CLOSING_TAG);
-		builder.append(H1_CLOSING_TAG);
-		String message = builder.toString();
-		EmailMessage emailMessage = new EmailMessage(recipient, ACTIVATE_SUBJECT, message);
-		return emailMessage;
+        String message = H1_STARTING_TAG +
+                A_STARTING_TAG +
+                HREF_ATTRIBUTE +
+                user.getLogin() +
+                PLACEHOLDER +
+                A_CLOSING_TAG +
+                H1_CLOSING_TAG;
+        return new EmailMessage(recipient, ACTIVATE_SUBJECT, message);
 	}
 	
 	/**
@@ -105,9 +102,6 @@ public class EmailMessageFactory {
 		builder.append(sum);
 		builder.append(P_CLOSING_TAG);
 		String message = builder.toString();
-		EmailMessage emailMessage = new EmailMessage(recipient, INVOICE_SUBJECT, message);
-		return emailMessage;
+        return new EmailMessage(recipient, INVOICE_SUBJECT, message);
 	}
 }
-
-

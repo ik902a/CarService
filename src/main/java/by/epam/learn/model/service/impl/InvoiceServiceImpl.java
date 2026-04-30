@@ -3,8 +3,8 @@ package by.epam.learn.model.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.MessagingException;
-
+import by.epam.learn.exception.MailException;
+import jakarta.mail.MessagingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,10 +26,11 @@ import by.epam.learn.util.MailSender;
  * @see InvoiceService
  */
 public class InvoiceServiceImpl implements InvoiceService {
+
 	public static Logger log = LogManager.getLogger();
 
 	@Override
-	public boolean addInvoice(String[] operations, Order order) throws ServiceException {
+	public boolean addInvoice(String[] operations, Order order) throws ServiceException, MailException {
 		boolean isAdded = false;
 		List<Price> prices = new ArrayList<>();
 		long clientId = order.getCar().getUser().getUserId();
@@ -47,10 +48,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 				EmailMessage emailMessage = EmailMessageFactory.createInvoiceMessage(prices, recipient);
 				MailSender.send(emailMessage);
 			}
-		} catch (MessagingException | DaoException e) {
+		} catch (DaoException e) {
 			log.error("invoice creation error", e);
 			throw new ServiceException("invoice creation error", e);
-		}
-		return isAdded;
+		} catch (MessagingException e) {
+			log.error("email with invoice sending error", e);
+            throw new MailException("email with invoice sending error", e);
+        }
+        return isAdded;
 	}
 }

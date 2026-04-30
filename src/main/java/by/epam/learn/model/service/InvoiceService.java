@@ -3,6 +3,7 @@ package by.epam.learn.model.service;
 import java.util.Enumeration;
 
 import by.epam.learn.entity.Order;
+import by.epam.learn.exception.MailException;
 import by.epam.learn.exception.ServiceException;
 
 public interface InvoiceService {//TODO
@@ -15,5 +16,5 @@ public interface InvoiceService {//TODO
 	 * @return boolean true if the order has been added, else false
 	 * @throws ServiceException if {@link DaoException} occurs
 	 */
-	boolean addInvoice(String[] operations, Order order) throws ServiceException;
+	boolean addInvoice(String[] operations, Order order) throws ServiceException, MailException;
 }

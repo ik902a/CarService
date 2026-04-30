@@ -34,12 +34,12 @@ final class DaoEntityBuilder {
 	 */
 	static User buildUser(ResultSet resultSet) throws SQLException {
 		long userId = resultSet.getLong(USERS_IDUSER);
-    	String login = resultSet.getNString(USERS_LOGIN);
-        String name = resultSet.getNString(USERS_NAME);
-    	String email = resultSet.getNString(USERS_EMAIL);
-        String phone = resultSet.getNString(USERS_PHONE);
-        UserRole role = UserRole.valueOf(resultSet.getNString(USERS_ROLE));
-        UserStatus status = UserStatus.valueOf(resultSet.getNString(USERS_STATUS));
+    	String login = resultSet.getString(USERS_LOGIN);
+        String name = resultSet.getString(USERS_NAME);
+    	String email = resultSet.getString(USERS_EMAIL);
+        String phone = resultSet.getString(USERS_PHONE);
+        UserRole role = UserRole.valueOf(resultSet.getString(USERS_ROLE));
+        UserStatus status = UserStatus.valueOf(resultSet.getString(USERS_STATUS));
         User user = new User(userId, login, name,  email, phone, role, status);
 		return user;
 	}
@@ -54,13 +54,13 @@ final class DaoEntityBuilder {
 	static Car buildCar(ResultSet resultSet) throws SQLException {
 		long carId = resultSet.getLong(CARS_IDCAR);
 		User user = DaoEntityBuilder.buildUser(resultSet);
-    	String vin = resultSet.getNString(CARS_VIN);
-        String brand = resultSet.getNString(CARS_BRAND);
-    	String model = resultSet.getNString(CARS_MODEL);
-        String year = resultSet.getNString(CARS_YEAR);
-        String fuel = resultSet.getNString(CARS_FUEL);
-        String volume = resultSet.getNString(CARS_VOLUME);
-        String transmission = resultSet.getNString(CARS_TRANSMISSION);
+    	String vin = resultSet.getString(CARS_VIN);
+        String brand = resultSet.getString(CARS_BRAND);
+    	String model = resultSet.getString(CARS_MODEL);
+        String year = resultSet.getString(CARS_YEAR);
+        String fuel = resultSet.getString(CARS_FUEL);
+        String volume = resultSet.getString(CARS_VOLUME);
+        String transmission = resultSet.getString(CARS_TRANSMISSION);
         Car car = new Car(carId, user, vin, brand, model, year, fuel, volume, transmission);
 		return car;
 	}
@@ -76,8 +76,8 @@ final class DaoEntityBuilder {
 		long orderId = resultSet.getLong(ORDERS_IDORDER);
 		Car car = DaoEntityBuilder.buildCar(resultSet);
 		WorkType workType = DaoEntityBuilder.buildWorkType(resultSet);
-		String message = resultSet.getNString(ORDERS_MESSAGE);
-		OrderStatus orderStatus = OrderStatus.valueOf(resultSet.getNString(ORDERS_ORDER_STATUS));
+		String message = resultSet.getString(ORDERS_MESSAGE);
+		OrderStatus orderStatus = OrderStatus.valueOf(resultSet.getString(ORDERS_ORDER_STATUS));
 		LocalDate date = resultSet.getDate(ORDERS_DATE).toLocalDate();
 		long mechanicId = resultSet.getLong(ORDERS_MECHANIC_ID);
 		Order order = new Order(orderId, car, workType, message, orderStatus, date, mechanicId);
@@ -93,7 +93,7 @@ final class DaoEntityBuilder {
 	 */
 	static Price buildPrice(ResultSet resultSet) throws SQLException {
 		long priceId = resultSet.getLong(PRICES_IDPRICE);
-		String operation = resultSet.getNString(PRICES_OPERATION);
+		String operation = resultSet.getString(PRICES_OPERATION);
 		double price = resultSet.getDouble(PRICES_PRICE);
 		WorkType workType = DaoEntityBuilder.buildWorkType(resultSet);
 		Price pricelist = new Price(priceId, operation, price, workType);
@@ -109,7 +109,7 @@ final class DaoEntityBuilder {
 	 */
 	static WorkType buildWorkType(ResultSet resultSet) throws SQLException {
 		long workTypeId = resultSet.getLong(WORK_TYPES_IDWORKTYPE);
-		String workTypeName = resultSet.getNString(WORK_TYPSE_WORK_TYPE);
+		String workTypeName = resultSet.getString(WORK_TYPSE_WORK_TYPE);
 		WorkType workType = new WorkType(workTypeId, workTypeName);
 		return workType;
 	}

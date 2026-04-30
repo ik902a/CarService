@@ -1,6 +1,6 @@
 package by.epam.learn.controller.command;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * The {@code Command} interface, which represents Command pattern 

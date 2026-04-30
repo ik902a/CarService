@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import by.epam.learn.exception.MailException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,7 +82,7 @@ public class SignUpCommand implements Command {
 				request.setAttribute(AttributeParameter.ERROR_MESSAGE_LIST, errorMessageList);
 				router = new Router(PagePath.SIGNUP, RouteType.FORWARD);
 			}
-		} catch (ServiceException e) {
+		} catch (ServiceException | MailException e) {
 			request.setAttribute(AttributeParameter.EXCEPTION, e);
 			log.error("exception while signing up", e);
 			router = new Router(PagePath.ERROR, RouteType.FORWARD);

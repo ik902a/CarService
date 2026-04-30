@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +29,7 @@ import static by.epam.learn.controller.command.DataKeyword.*;
  * @author Ihar Klepcha
  */
 public class UpdateClientCommand implements Command {
+
 	public static Logger log = LogManager.getLogger();
 	private final UserServiceImpl service;
 

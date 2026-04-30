@@ -21,6 +21,7 @@ import by.epam.learn.exception.ConnectionPoolException;
  * @author Ihar Klepcha
  */
 public class ConnectionPool {
+
 	public static Logger log = LogManager.getLogger();
 	private static final int DEFAULT_POOL_SIZE = 8;
 	private static ConnectionPool instance;

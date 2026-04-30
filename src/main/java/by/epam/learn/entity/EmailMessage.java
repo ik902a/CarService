@@ -7,6 +7,7 @@ package by.epam.learn.entity;
  * @see Entity
  */
 public class EmailMessage {
+
 	private String recipient;
 	private String subject;
 	private String message;

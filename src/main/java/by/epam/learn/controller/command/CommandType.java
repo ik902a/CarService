@@ -14,6 +14,7 @@ import by.epam.learn.model.service.impl.InvoiceServiceImpl;
  * @author Ihar Klepcha
  */
 public enum CommandType {
+
 	TO_HOME(new ToPageCommand(PagePath.HOME)),
 	TO_MAIN(new ToMainCommand(new PriceServiceImpl())),
 	TO_SIGNUP(new ToPageCommand(PagePath.SIGNUP)),
